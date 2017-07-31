@@ -87,7 +87,7 @@ namespace move {
 		}
 
 		if(getRow(boxes,switchBoxL) == (switchClockwise ? TOPROW : BOTTOMROW)) {
-			stepsRemain = (switchBoxR - switchBoxL) * (blocksBetweenBox + 1);
+			stepsRemain = (switchBoxR - switchBoxL) * (blocksBetweenBox + 1) * BLOCKWIDTH;
 			crtPhase = SWITCH_HOR;
 		}
 	}
