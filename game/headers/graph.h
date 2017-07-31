@@ -6,6 +6,7 @@
 // category: 2 for horizontal in the top
 // category: 3 for horizontal with one in the top
 // category: 4 for horizontal in the bottom
+// category: 5 for functional (selecting, displaying result)
 
 static byte bitmaps[][][] = {
 	{
@@ -565,5 +566,71 @@ static byte bitmaps[][][] = {
 		}
 	}
 }
+
+static byte box[] =  {
+	B00000,
+	B01110,
+	B10001,
+	B10101,
+	B10001,
+	B01110,
+	B00000,
+	B00000
+};
+
+static byte bracketL[] = {
+	B00111,
+	B00100,
+	B00100,
+	B00100,
+	B00100,
+	B00100,
+	B00111,
+	B00000
+};
+
+static byte bracketR[] = {
+	B11100,
+	B00100,
+	B00100,
+	B00100,
+	B00100,
+	B00100,
+	B11100,
+	B00000
+};
+
+static byte openBox[] = {
+	B00000,
+	B01110,
+	B11111,
+	B10101,
+	B10001,
+	B01110,
+	B00000,
+	B00000
+};
+
+static byte openRight[] = {
+	B00000,
+	B00000,
+	B00000,
+	B01010,
+	B10101,
+	B10001,
+	B01010,
+	B00100
+};
+
+static byte openWrong[] = {
+	B00000,
+	B00000,
+	B00000,
+	B10001,
+	B01010,
+	B00100,
+	B01010,
+	B10001
+};
 
 #endif
