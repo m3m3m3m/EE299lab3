@@ -67,7 +67,7 @@ namespace move {
 		{	
 			int crtCol = block2col((i + 1) * (blocksBetweenBox + 1));
 			setCol(boxes,i,crtCol);
-			setRow(boxes,i,BEGINHEIGHT);
+			setRow(boxes,i,BLOCKHEIGHT);
 		}
 	}
 
@@ -126,7 +126,12 @@ namespace move {
 		crtPhase = BEGIN;
 		stepsRemain = BEGINFRAMES;
 		blocksBetweenBox = LCDWIDTH / (boxes.num + 1) - 1;
-		initPos(boxes);
+		for(int i = 0;i<boxes.num;i++)
+		{	
+			int crtCol = block2col((i + 1) * (blocksBetweenBox + 1));
+			setCol(boxes,i,crtCol);
+			setRow(boxes,i,BEGINHEIGHT);
+		}
 	}
 
 	void swap(Boxes &boxes, int boxA, int boxB, bool clockwise) {
