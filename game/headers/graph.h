@@ -1,14 +1,20 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-// category: 0 for vertical
-// category: 1 for horizontal with one in the bottom
-// category: 2 for horizontal in the top
-// category: 3 for horizontal with one in the top
-// category: 4 for horizontal in the bottom
-// category: 5 for functional (selecting, displaying result)
+#include "Arduino.h"
 
-static byte bitmaps[][][] = {
+// category: 0 for vertical, line: 1,2
+// category: 1 for horizontal with one stay in the bottom, line: 1
+// category: 2 for horizontal in the top, line: 1
+// category: 3 for horizontal with one stay in the top, line: 2
+// category: 4 for horizontal in the bottom, line: 2
+#define VERTICAL 0
+#define HORIZONTAL_LINE1_WITH 1
+#define HORIZONTAL_LINE1 2
+#define HORIZONTAL_LINE2_WITH 3
+#define HORIZONTAL_LINE2 4
+
+static byte bitmaps[5][12][8] = {
 	{
 		// line:1,2 ; cat:0
 		{
@@ -565,7 +571,7 @@ static byte bitmaps[][][] = {
 			B00000
 		}
 	}
-}
+};
 
 static byte box[] =  {
 	B00000,

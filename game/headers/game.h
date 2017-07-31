@@ -13,15 +13,11 @@ struct Boxes {
 	Pos pos[MAX_BOXES];
 };
 
-struct Map {
-	int cat, index;
-	// cat from 0 to 4
-	// index from 0 to 9
-};
+typedef unsigned char *Char;
 
-struct Char {
+struct Map {
 	char smap;	// the lcd mapping
-	Map map;	// the global mapping
+	Char map;	// the global mapping
 };
 
 namespace master {

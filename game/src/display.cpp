@@ -3,18 +3,44 @@
 #include "../headers/game.h"
 #include "../headers/graph.h"
 
+#define EACH_COL(i) (int i = 0; i < LCD_WIDTH; i ++)
+#define EACH_ROW(i) (int i = 0; i < LCD_HEIGHT; i ++)
+
 namespace display {
 
 	LiquidCrystal *lcd;
-	Char display[LCD_WIDTH][LCD_HEIGHT];
+	Map display[LCD_WIDTH][LCD_HEIGHT];
+	Char charList[MAX_CHARS];
+	int charListIndex;
 
-	const Pos gridPos[LCD_WIDTH][LCD_HEIGHT] = {
-		{-2, -2}, {-2, }
-	};
+	inline int _inCharList(Char ch) {
+		for (int i = 0; i < charListIndex; i ++) {
+			if (charList[i] == ch) {
+				return i;
+			}
+		}
+		return charListIndex;
+	}
+
+	inline int _gridCol(int col) {
+		return col * 6 - 2;
+	}
+
+	inline int _gridRow(int row) {
+		return row * 9 - 2;
+	}
+
+	inline int _gridColCenter(int col) {
+		return col * 6 + 2;
+	}
+
+	inline int _gridRowCenter(int row) {
+		return row == 0 ? 2: 14;
+	}
 
 	void _initDisplay() {
-		for (int i = 0; i < LCD_WIDTH; i ++) {
-			for (int j = 0; j < LCD_HEIGHT; j ++) {
+		for EACH_COL(i) {
+			for EACH_ROW(j) {
 				display[i][j].smap = ' ';
 			}
 		}
@@ -22,13 +48,16 @@ namespace display {
 
 	void _refreshDisplay() {
 		lcd->clear();
+		for (int i = 0; i < charListIndex; i ++) {
+			lcd->createChar(i, charList[i]);
+		}
 		lcd->setCursor(0, 0);
-		for (int i = 0; i < LCD_WIDTH; i ++) {
-			lcd->write(display[i][0].smap);
+		for EACH_COL(i) {
+			lcd->print(display[i][0].smap);
 		}
 		lcd->setCursor(0, 1);
-		for (int i = 0; i < LCD_WIDTH; i ++) {
-			lcd->write(display[i][1].smap);
+		for EACH_COL(i) {
+			lcd->print(display[i][1].smap);
 		}
 	}
 
@@ -40,6 +69,57 @@ namespace display {
 	}
 
 	void plotAnima(Boxes& boxes) {
+		charListIndex = 0;
 
+		for EACH_COL(i) {
+			for EACH_ROW(j) {
+				int gridCol = _gridCol(i);
+				int gridColCenter = _gridColCenter(i);
+				int gridRow = _gridRow(j);
+				int gridRowCenter = _gridRowCenter(j);
+				int col_relative = -1;
+				int row_relative = -1;
+
+				for (int k = 0; k < boxes.num; k ++) {
+					// same row first, same col second
+					if (boxes.pos[k].r == gridRowCenter) {
+						int _relative = boxes.pos[k].c - gridCol;
+						if (_relative >= 0 && _relative < 9)
+							col_relative = _relative;
+					} else if (boxes.pos[k].c == gridColCenter) {
+						int _relative = boxes.pos[k].r - gridRow;
+						if (_relative >= 0 && _relative < 12)
+							row_relative = _relative;
+					}
+				}
+
+				if (col_relative == -1 && row_relative == -1) {	// neither same row or col
+					display[i][j].map == NULL;
+					display[i][j].smap == ' ';
+				} else {
+					if (col_relative == -1) {					// same col without same row
+						display[i][j].map = bitmaps[VERTICAL][row_relative];
+					} else {
+						if (row_relative == -1) {				// same row without same col
+							display[i][j].map = bitmaps[
+								j == 0 ? HORIZONTAL_LINE1 : HORIZONTAL_LINE2
+							][col_relative];
+						} else {								// both same row and col
+							display[i][j].map = bitmaps[
+								j == 0 ? HORIZONTAL_LINE1: HORIZONTAL_LINE2
+							][col_relative];
+						}
+					}
+					// insert the char to the list if it is a new char
+					display[i][j].smap = (char)_inCharList(display[i][j].map);
+					if (display[i][j].smap == (char)charListIndex) {
+						charList[charListIndex++] = display[i][j].map;
+					}
+				}
+			}
+		}
+
+		_refreshDisplay();
 	}
+
 }

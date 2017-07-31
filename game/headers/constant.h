@@ -15,5 +15,6 @@
 #define BAUD_RATE 9600
 
 #define MAX_BOXES 8
+#define MAX_CHARS 8
 
 #endif	// CONSTANT_H
