@@ -108,7 +108,7 @@ namespace move {
 	}
 
 	void switchBack(Boxes &boxes) {
-		if(switchHorizontal) {
+		if(switchClockwise) {
 			moveDown(boxes,switchBoxL);
 			moveUp(boxes,switchBoxR);
 		} else {
