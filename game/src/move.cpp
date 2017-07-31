@@ -97,8 +97,8 @@ namespace move {
 			moveRight(boxes,switchBoxL);
 			moveLeft(boxes,switchBoxR);
 		} else {
-			moveRight(boxes,switchBoxR);
-			moveLeft(boxes,switchBoxL);
+			moveRight(boxes,switchBoxL);
+			moveLeft(boxes,switchBoxR);
 		}
 
 		if(stepsRemain == 0) {
