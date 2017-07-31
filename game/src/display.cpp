@@ -8,6 +8,10 @@ namespace display {
 	LiquidCrystal *lcd;
 	Char display[LCD_WIDTH][LCD_HEIGHT];
 
+	const Pos gridPos[LCD_WIDTH][LCD_HEIGHT] = {
+		{-2, -2}, {-2, }
+	};
+
 	void _initDisplay() {
 		for (int i = 0; i < LCD_WIDTH; i ++) {
 			for (int j = 0; j < LCD_HEIGHT; j ++) {
@@ -35,4 +39,7 @@ namespace display {
 		_refreshDisplay();
 	}
 
+	void plotAnima(Boxes& boxes) {
+
+	}
 }

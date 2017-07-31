@@ -5,7 +5,7 @@
 #include "constant.h"
 
 struct Pos {
-	int x, y;
+	int c, r;	// column and row in micro grid
 };
 
 struct Boxes {
