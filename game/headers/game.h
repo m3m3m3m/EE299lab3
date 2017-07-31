@@ -10,7 +10,7 @@ struct Pos {
 
 struct Boxes {
 	int num;
-	Pos pos[8];
+	Pos pos[MAX_BOXES];
 };
 
 struct Map {
@@ -20,7 +20,7 @@ struct Map {
 };
 
 struct Char {
-	int smap;	// the lcd mapping
+	char smap;	// the lcd mapping
 	Map map;	// the global mapping
 };
 
