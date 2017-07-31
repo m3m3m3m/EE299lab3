@@ -144,7 +144,7 @@ namespace move {
 		stepsRemain = MOVEVERSTEPS;
 	}
 
-	void end(Boxes &boxes) {
+	void end() {
 		crtPhase = END;
 		stepsRemain = ENDFRAMES;
 	}
