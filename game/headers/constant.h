@@ -14,4 +14,6 @@
 #define LCD_SIZE LCD_WIDTH, LCD_HEIGHT
 #define BAUD_RATE 9600
 
+#define MAX_BOXES 8
+
 #endif	// CONSTANT_H

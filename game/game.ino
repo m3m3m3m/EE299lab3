@@ -1,6 +1,5 @@
 
 #include "Arduino.h"
-#include "headers/constant.h"
 #include "headers/game.h"
 
 void setup() {
