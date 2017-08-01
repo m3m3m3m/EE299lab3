@@ -91,10 +91,7 @@ namespace display {
 							row_relative = _relative;
 					}
 				}
-				// if (i == 7 && j == 0) {
-				// 	Serial.println(row_relative);
-				// 	Serial.println(col_relative);
-				// }
+
 				if (col_relative == -1 && row_relative == -1) {	// neither same row or col
 					display[i][j].map = NULL;
 					display[i][j].smap = ' ';
@@ -122,6 +119,16 @@ namespace display {
 		}
 
 		_refreshDisplay();
+	}
+
+	void choose(Boxes& boxes, int select) {
+		for (int i = 0; i < boxes.num; i ++) {
+			
+		}
+	}
+
+	void gameStart(Boxes& boxes) {
+
 	}
 
 }

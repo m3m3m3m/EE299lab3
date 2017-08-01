@@ -20,6 +20,11 @@ struct Map {
 	Char map;	// the global mapping
 };
 
+namespace game {
+	void newGame();
+	void settings();
+}
+
 namespace master {
 	void setup();
 	void loop();

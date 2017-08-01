@@ -4,7 +4,7 @@
 #include "../headers/move.h"
 
 Boxes boxes = {
-	.num = 4,
+	.num = 8,
 	.pos = {
 		{2, 8},
 		{38, 8},
@@ -23,11 +23,11 @@ namespace test {
 	}
 
 	void loop() {
-		for (int i = random(1, 3); i >= 0; i --)
+		for (int i = 1; i > 0; i --)
 			if (!move::nextFrame(boxes)) {
-				move::swap(boxes, 1, 3, false);
+				move::swap(boxes, 0, 5, false);
 			}
 		display::plotAnima(boxes);
-		delay(20);
+		delay(200);
 	}
 }
