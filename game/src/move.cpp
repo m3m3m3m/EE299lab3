@@ -107,6 +107,7 @@ namespace move {
 
 		if(getRow(boxes,switchBoxL) == (switchClockwise ? TOPROW : BOTTOMROW)) {
 			stepsRemain = (switchBoxR - switchBoxL) * (blocksBetweenBox + 1) * BLOCKWIDTH;
+			stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
 			crtPhase = SWITCH_HOR;
 		}
 	}
@@ -123,6 +124,7 @@ namespace move {
 
 		if(stepsRemain == 0) {
 			stepsRemain = MOVEVERSTEPS;
+			stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
 			crtPhase = SWITCH_BAK;
 		}
 	}
@@ -174,6 +176,7 @@ namespace move {
 		stepLen = step;
 
 		stepsRemain = MOVEVERSTEPS;
+		stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
 	}
 
 	// set all the boxes to their ending positions
