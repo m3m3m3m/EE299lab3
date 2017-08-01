@@ -47,7 +47,6 @@ namespace display {
 	}
 
 	void _refreshDisplay() {
-		lcd->clear();
 		for (int i = 0; i < charListIndex; i ++) {
 			lcd->createChar(i, charList[i]);
 		}
@@ -92,10 +91,13 @@ namespace display {
 							row_relative = _relative;
 					}
 				}
-
+				// if (i == 7 && j == 0) {
+				// 	Serial.println(row_relative);
+				// 	Serial.println(col_relative);
+				// }
 				if (col_relative == -1 && row_relative == -1) {	// neither same row or col
-					display[i][j].map == NULL;
-					display[i][j].smap == ' ';
+					display[i][j].map = NULL;
+					display[i][j].smap = ' ';
 				} else {
 					if (col_relative == -1) {					// same col without same row
 						display[i][j].map = bitmaps[VERTICAL][row_relative];
@@ -106,7 +108,7 @@ namespace display {
 							][col_relative];
 						} else {								// both same row and col
 							display[i][j].map = bitmaps[
-								j == 0 ? HORIZONTAL_LINE1: HORIZONTAL_LINE2
+								j == 0 ? HORIZONTAL_LINE1_WITH: HORIZONTAL_LINE2_WITH
 							][col_relative];
 						}
 					}
