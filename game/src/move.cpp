@@ -91,7 +91,7 @@ namespace move {
 	// move all the boxes up for 1 bit
 	void beginMove(Boxes &boxes) {
 		for(int i = 0;i<boxes.num;i++) {
-			moveUp(boxes,i,stepLen);
+			moveUp(boxes,i);
 		}
 	}
 
@@ -143,7 +143,7 @@ namespace move {
 	// move all the boxes down by 1 bit
 	void endMove(Boxes &boxes) {
 		for(int i = 0;i<boxes.num;i++) {
-			moveDown(boxes,i,stepLen);
+			moveDown(boxes,i);
 		}
 	}
 
