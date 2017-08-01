@@ -10,7 +10,7 @@
 namespace game {
 
 	int num = 3;	// number of boxes
-	int speed = 2;	// the speed level
+	int speed = 5;	// the speed level
 					// minspeed = (speed + 1) / 2
 					// maxspeed = (speed + 4) / 2
 	int diffi = 1;	// the times of moving = 5 * diffi + 5
@@ -76,9 +76,13 @@ namespace game {
 		int select = random(0, num);
 		display::choose(boxes, select);
 		delay(1000);
-		display::gameOpen(boxes);
-		if (choose == select) {
-			
+		display::gameOpen(boxes, select);
+		delay(1000);
+		if (choice == select) {
+			display::rightOpen(boxes, select);
+		} else {
+			display::wrongOpen(boxes, select);
 		}
+		delay(1000);
 	}
 }

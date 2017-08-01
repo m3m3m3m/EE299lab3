@@ -183,4 +183,12 @@ namespace display {
 	void gameOpen(Boxes& boxes, int select) {
 		
 	}
+
+	void rightOpen(Boxes& boxes, int select) {
+
+	}
+
+	void wrongOpen(Boxes& boxes, int select) {
+		
+	}
 }

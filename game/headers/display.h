@@ -11,6 +11,8 @@ namespace display {
 	void gameStart(Boxes&);		// the start screen
 	void gameEnd(Boxes&);		// the end screen
 	void gameOpen(Boxes&, int);	// open the box
+	void rightOpen(Boxes&, int);// open right
+	void wrongOpen(Boxes&, int);// open wrong
 	void ready(char const*);	// display info in the first line
 }
 
