@@ -1,6 +1,7 @@
 
-#include "../headers/command.h"
 #include "Arduino.h"
+#include "../headers/game.h"
+#include "../headers/command.h"
 
 namespace command {
 	enum Command {
@@ -10,56 +11,87 @@ namespace command {
 		GAME_END,
 		GAME_OPEN,
 		RIGHT_OPEN,
-		WRONG_OPEN，
+		WRONG_OPEN,
 		READY,
 		SETTING_START,
 		SETTING_MENU
 	};
 
-	void transferBox(Boxes& boxes) {
-		
+	void transferString(char const* str) {
+		Serial.print(str);
+		Serial.print('\n');
 	}
+
+	void transferNum(int num) {
+		Serial.print(num);
+		Serial.print(' ');
+	}
+
+	void transferBox(Boxes& boxes) {
+		transferNum(boxes.num);
+		for(int i = 0;i<boxes.num;i++) {
+			transferNum(boxes.pos[i].c);
+			transferNum(boxes.pos[i].r);
+		}
+	}
+
+
 }
 
 void command::plotAnima(Boxes& boxes) {
-	Serial.print(Command::PLOT_ANIMA);
-	Serial.print(' ');
-	transferBox();
+	transferNum(Command::PLOT_ANIMA);
+	transferBox(boxes);
 }
 
 void command::choose(Boxes& boxes, int boxNo) {
-	display::choose(boxes, boxNo);
+	transferNum(Command::CHOOSE);
+	transferBox(boxes);
+	transferNum(boxNo);
 }
 
 void command::gameStart(Boxes& boxes) {
-	display::gameStart(boxes);
+	transferNum(Command::GAME_START);
+	transferBox(boxes);
 }
 
 void command::gameEnd(Boxes& boxes) {
-	display::gameEnd(boxes);
+	transferNum(Command::GAME_END);
+	transferBox(boxes);
 }
 
 void command::gameOpen(Boxes& boxes, int choice) {
-	display::gameOpen(boxes, choice);
+	transferNum(Command::GAME_OPEN);
+	transferBox(boxes);
+	transferNum(choice);
 }
 
 void command::rightOpen(Boxes& boxes, int choice) {
-	display::rightOpen(boxes, choice);
+	transferNum(Command::RIGHT_OPEN);
+	transferBox(boxes);
+	transferNum(choice);
 }
 
 void command::wrongOpen(Boxes& boxes, int choice) {
-	display::wrongOpen(boxes, choice);
+	transferNum(Command::WRONG_OPEN);
+	transferBox(boxes);
+	transferNum(choice);
 }
 
 void command::ready(char const* info) {
-	display::ready(info);
+	transferNum(Command::READY);
+	transferString(info);
 }
 
 void command::settingStart() {
-	display::settingStart();
+	transferNum(Command::SETTING_START);
 }
 
 void command::settingMenu
 (char const* item, int value, int min, int max, int line) {
-	display::settingMenu(item, value, min, max, line);
+	transferNum(Command::SETTING_MENU);
+	transferString(item);
+	transferNum(value);
+	transferNum(min);
+	transferNum(max);
+	transferNum(line);
 }
