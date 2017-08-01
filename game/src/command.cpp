@@ -132,42 +132,51 @@ void command::receiveEvent() {
 	switch(cmd) {
 		case Command::PLOT_ANIMA:
 			parseBoxes(boxes);
+			Serial.println("plotAnima");
 			display::plotAnima(boxes);
 			break;
 		case Command::CHOOSE:
 			parseBoxes(boxes);
 			recNum = Serial.parseInt();
+			Serial.println("choose");
 			display::choose(boxes,recNum);
 			break;
 		case Command::GAME_START:
 			parseBoxes(boxes);
+			Serial.println("gameStart");
 			display::gameStart(boxes);
 			break;
 		case Command::GAME_END:
 			parseBoxes(boxes);
+			Serial.println("gameEnd");
 			display::gameEnd(boxes);
 			break;
 		case Command::GAME_OPEN:
 			parseBoxes(boxes);
 			recNum = Serial.parseInt();
+			Serial.println("gameOpen");
 			display::gameOpen(boxes,recNum);
 			break;
 		case Command::RIGHT_OPEN:
 			parseBoxes(boxes);
 			recNum = Serial.parseInt();
+			Serial.println("rightOpen");
 			display::rightOpen(boxes,recNum);
 			break;
 		case Command::WRONG_OPEN:
 			parseBoxes(boxes);
 			recNum = Serial.parseInt();
+			Serial.println("wrongOpen");
 			display::wrongOpen(boxes,recNum);
 			break;
 		case Command::READY:
 			recStr = Serial.readStringUntil(TERMINATOR).c_str();
+			Serial.println("ready");
 			display::ready(recStr);
 			break;
 		case Command::SETTING_START:
 			display::settingStart();
+			Serial.println("settingStart");
 			break;
 		case Command::SETTING_MENU:
 			recStr = Serial.readStringUntil(TERMINATOR).c_str();
@@ -175,6 +184,7 @@ void command::receiveEvent() {
 			menuVal1 = Serial.parseInt();
 			menuVal2 = Serial.parseInt();
 			menuVal3 = Serial.parseInt();
+			Serial.println("settingMenu");
 			display::settingMenu(recStr,menuVal0,menuVal1,menuVal2,menuVal3);
 			break;
 	}
