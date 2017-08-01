@@ -183,14 +183,28 @@ namespace display {
 	}
 
 	void gameOpen(Boxes& boxes, int select) {
-		
+		int col = boxes.pos[select].c / 6;
+		lcd->setCursor(col, 1);
+		lcd->print(OPENBOX);
 	}
 
 	void rightOpen(Boxes& boxes, int select) {
-
+		int col = boxes.pos[select].c / 6;
+		lcd->setCursor(col, 0);
+		lcd->print(OPENRIGHT);
+		lcd->setCursor(col-1,1);
+		lcd->print(' ');
+		lcd->setCursor(col+1,1);
+		lcd->print(' ');
 	}
 
 	void wrongOpen(Boxes& boxes, int select) {
-		
+		int col = boxes.pos[select].c / 6;
+		lcd->setCursor(col, 0);
+		lcd->print(OPENWRONG);
+		lcd->setCursor(col-1,1);
+		lcd->print(' ');
+		lcd->setCursor(col+1,1);
+		lcd->print(' ');
 	}
 }
