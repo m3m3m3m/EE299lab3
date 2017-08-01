@@ -80,6 +80,8 @@ namespace display {
 
 	void plotAnima(Boxes& boxes) {
 		charListIndex = 0;
+		charList[charListIndex++] = bitmaps[VERTICAL][1];
+		charList[charListIndex++] = bitmaps[VERTICAL][10];
 
 		for EACH_COL(i) {
 			for EACH_ROW(j) {
