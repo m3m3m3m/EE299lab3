@@ -5,6 +5,14 @@
 
 #define EACH_COL(i) (int i = 0; i < LCD_WIDTH; i ++)
 #define EACH_ROW(i) (int i = 0; i < LCD_HEIGHT; i ++)
+#define EACH_BOX(i) (int i = 0; i < boxes.num; i ++)
+
+#define BOX (char)2
+#define OPENBOX (char)3
+#define OPENRIGHT (char)4
+#define OPENWRONG (char)5
+#define BRACKETL (char)6
+#define BRACKETR (char)7
 
 namespace display {
 
@@ -79,7 +87,7 @@ namespace display {
 				int col_relative = -1;
 				int row_relative = -1;
 
-				for (int k = 0; k < boxes.num; k ++) {
+				for EACH_BOX(k) {
 					// same row first, same col second
 					if (boxes.pos[k].r == gridRowCenter) {
 						int _relative = boxes.pos[k].c - gridCol;
@@ -122,14 +130,53 @@ namespace display {
 	}
 
 	void choose(Boxes& boxes, int select) {
-		for (int i = 0; i < boxes.num; i ++) {
+		for EACH_BOX(i) {
 			int col = boxes.pos[i].c / 6;
-			
+			lcd->setCursor(col - 1, 1);
+			lcd->print(' ');
+			lcd->setCursor(col + 1, 1);
+			lcd->print(' ');
 		}
+		int col = boxes.pos[select].c / 6;
+		lcd->setCursor(col - 1, 1);
+		lcd->print(BRACKETL);
+		lcd->setCursor(col + 1, 1);
+		lcd->print(BRACKETR);
+	}
+
+	void ready(char const *s) {
+		lcd->setCursor(0, 0);
+		lcd->print("                ");
+		lcd->setCursor(0, 0);
+		lcd->print(s);
 	}
 
 	void gameStart(Boxes& boxes) {
-
+		lcd->createChar(BOX, box);
+		lcd->createChar(BRACKETL, bracketL);
+		lcd->createChar(BRACKETR, bracketR);
+		for EACH_BOX(i) {
+			int col = boxes.pos[i].c / 6;
+			lcd->setCursor(col, 1);
+			lcd->print(BOX);
+		}
+		choose(boxes, 0);
+		ready("Choose to start:");
 	}
 
+	void gameEnd(Boxes& boxes) {
+		lcd->createChar(BOX, box);
+		lcd->createChar(OPENBOX, openBox);
+		lcd->createChar(OPENRIGHT, openRight);
+		lcd->createChar(OPENWRONG, openWrong);
+		lcd->createChar(BRACKETL, bracketL);
+		lcd->createChar(BRACKETR, bracketR);
+		for EACH_BOX(i) {
+			int col = boxes.pos[i].c / 6;
+			lcd->setCursor(col, 1);
+			lcd->print(BOX);
+		}
+		choose(boxes, 0);
+		ready("Choose your box:");
+	}
 }
