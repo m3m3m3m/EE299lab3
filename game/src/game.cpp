@@ -34,84 +34,84 @@ namespace game {
 	inline int _step() {
 		return random((speed + 1) / 2, (speed + 4) / 2);
 	}
+}
 
-	void newGame() {
-		Boxes boxes = {.num=num};
-		move::begin(boxes);
-		display::gameStart(boxes);
-		delay(1000);
-		display::choose(boxes, choice);
-		WAIT_FOR_CONFIRM DELAY;
-		display::ready("3");
-		delay(1000);
-		display::ready("2");
-		delay(1000);
-		display::ready("1");
-		delay(1000);
-		display::ready("Go");
-		delay(500);
+void game::newGame() {
+	Boxes boxes = {.num=num};
+	move::begin(boxes);
+	display::gameStart(boxes);
+	delay(1000);
+	display::choose(boxes, choice);
+	WAIT_FOR_CONFIRM DELAY;
+	display::ready("3");
+	delay(1000);
+	display::ready("2");
+	delay(1000);
+	display::ready("1");
+	delay(1000);
+	display::ready("Go");
+	delay(500);
 
-		move::begin(boxes);
+	move::begin(boxes);
+	display::plotAnima(boxes);
+	DELAY;
+	while (move::nextFrame(boxes)) {
 		display::plotAnima(boxes);
 		DELAY;
+	}
+	for (int i = 5 * diffi + 5; i > 0; i --) {
+		// generate random 2 boxes
+		int box1 = random(0, num);
+		int box2 = random(1, num);
+		if (box2 == box1) {
+			box2 = 0;
+		}
+		if (box1 == choice) {
+			choice = box2;
+		} else if (box2 == choice) {
+			choice = box1;
+		}
+		move::swap(
+			boxes, box1, box2, 
+			RANDOM_CLOCKWIZE,
+			_step()
+		);
 		while (move::nextFrame(boxes)) {
 			display::plotAnima(boxes);
 			DELAY;
 		}
-		for (int i = 5 * diffi + 5; i > 0; i --) {
-			// generate random 2 boxes
-			int box1 = random(0, num);
-			int box2 = random(1, num);
-			if (box2 == box1) {
-				box2 = 0;
-			}
-			if (box1 == choice) {
-				choice = box2;
-			} else if (box2 == choice) {
-				choice = box1;
-			}
-			move::swap(
-				boxes, box1, box2, 
-				RANDOM_CLOCKWIZE,
-				_step()
-			);
-			while (move::nextFrame(boxes)) {
-				display::plotAnima(boxes);
-				DELAY;
-			}
-		}
-		move::end();
-		while (move::nextFrame(boxes)) {
-			display::plotAnima(boxes);
-			DELAY;
-		}
-
-		display::gameEnd(boxes);
-		delay(1000);
-		int select = random(0, num);
-		display::choose(boxes, select);
-		WAIT_FOR_CONFIRM DELAY;
-		display::gameOpen(boxes, select);
-		delay(1000);
-		display::ready("");
-		if (choice == select) {
-			display::rightOpen(boxes, select);
-			delay(1000);
-			display::ready("You Win! :)");
-		} else {
-			display::wrongOpen(boxes, select);
-			delay(1000);
-			display::ready("You Lose! :(");
-		}
-		WAIT_FOR_CONFIRM DELAY;
-		setting();
+	}
+	move::end();
+	while (move::nextFrame(boxes)) {
+		display::plotAnima(boxes);
+		DELAY;
 	}
 
-	void setting() {
-		int settingLine = NUM;
-		display::settingStart();
-		SETTING_MENU(NUM, 0);
-		SETTING_MENU(SPEED, 1);
-		WAIT_FOR_CONFIRM DELAY;
+	display::gameEnd(boxes);
+	delay(1000);
+	int select = random(0, num);
+	display::choose(boxes, select);
+	WAIT_FOR_CONFIRM DELAY;
+	display::gameOpen(boxes, select);
+	delay(1000);
+	display::ready("");
+	if (choice == select) {
+		display::rightOpen(boxes, select);
+		delay(1000);
+		display::ready("You Win! :)");
+	} else {
+		display::wrongOpen(boxes, select);
+		delay(1000);
+		display::ready("You Lose! :(");
 	}
+	WAIT_FOR_CONFIRM DELAY;
+	setting();
+}
+
+void game::setting() {
+	int settingLine = NUM;
+	display::settingStart();
+	SETTING_MENU(NUM, 0);
+	SETTING_MENU(SPEED, 1);
+	WAIT_FOR_CONFIRM DELAY;
 }
