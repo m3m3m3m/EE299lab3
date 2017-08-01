@@ -123,6 +123,7 @@ namespace display {
 
 	void choose(Boxes& boxes, int select) {
 		for (int i = 0; i < boxes.num; i ++) {
+			int col = boxes.pos[i].c / 6;
 			
 		}
 	}

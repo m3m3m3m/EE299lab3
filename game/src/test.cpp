@@ -4,7 +4,7 @@
 #include "../headers/move.h"
 
 Boxes boxes = {
-	.num = 8,
+	.num = 7,
 	.pos = {
 		{2, 8},
 		{38, 8},
