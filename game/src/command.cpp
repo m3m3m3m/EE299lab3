@@ -13,7 +13,7 @@ namespace command {
 		display::gameStart(boxes);
 	}
 
-	void ready(char* info) {
+	void ready(char const* info) {
 		display::ready(info);
 	}
 }
