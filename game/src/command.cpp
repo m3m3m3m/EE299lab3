@@ -1,8 +1,6 @@
 #include "../headers/display.h"
+#include "../headers/command.h"
 
-namespace command {
-	
-}
 void command::plotAnima(Boxes& boxes) {
 	display::plotAnima(boxes);
 }

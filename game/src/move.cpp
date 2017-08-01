@@ -1,4 +1,5 @@
 #include "../headers/game.h"
+#include "../headers/move.h"
 
 #define BLOCKWIDTH 6
 #define BLOCKHEIGHT 8
@@ -146,67 +147,70 @@ namespace move {
 			moveDown(boxes,i);
 		}
 	}
+	
+}
 
-	// set all the boxes to their beginning positions
-	void begin(Boxes &boxes) {
-		crtPhase = BEGIN;
-		stepsRemain = BEGINFRAMES;
-		blocksBetweenBox = LCDWIDTH / boxes.num - 1;
-		int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
-		for(int i = 0;i<boxes.num;i++)
-		{	
-			int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 2);
-			setCol(boxes,i,crtCol);
-			setRow(boxes,i,BEGINHEIGHT);
-		}
+
+
+// set all the boxes to their beginning positions
+void move::begin(Boxes &boxes) {
+	crtPhase = BEGIN;
+	stepsRemain = BEGINFRAMES;
+	blocksBetweenBox = LCDWIDTH / boxes.num - 1;
+	int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
+	for(int i = 0;i<boxes.num;i++)
+	{	
+		int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 2);
+		setCol(boxes,i,crtCol);
+		setRow(boxes,i,BEGINHEIGHT);
 	}
+}
 
-	// record the number of the two swapped boxes and the direction
-	void swap(Boxes &boxes, int boxA, int boxB, bool clockwise,int step) {
-		crtPhase = SWITCH_OUT;
-		initPos(boxes);
-		if (boxA < boxB) {
-			switchBoxL = boxA;
-			switchBoxR = boxB;
-		} else {
-			switchBoxL = boxB;
-			switchBoxR = boxA;
-		}
-		switchClockwise = clockwise;
-		stepLen = step;
-
-		stepsRemain = MOVEVERSTEPS;
-		stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
+// record the number of the two swapped boxes and the direction
+void move::swap(Boxes &boxes, int boxA, int boxB, bool clockwise,int step) {
+	crtPhase = SWITCH_OUT;
+	initPos(boxes);
+	if (boxA < boxB) {
+		switchBoxL = boxA;
+		switchBoxR = boxB;
+	} else {
+		switchBoxL = boxB;
+		switchBoxR = boxA;
 	}
+	switchClockwise = clockwise;
+	stepLen = step;
 
-	// set all the boxes to their ending positions
-	void end() {
-		crtPhase = END;
-		stepsRemain = ENDFRAMES;
-	}
+	stepsRemain = MOVEVERSTEPS;
+	stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
+}
 
-	// modify the current positions according to the phases and remaining steps
-	// return true if there are still remaining steps, false if not
-	bool nextFrame(Boxes &boxes) {
-		if(stepsRemain == 0) return false;
-		else stepsRemain -= 1;
-		switch(crtPhase) {
-			case BEGIN:
-				beginMove(boxes);
-				break;
-			case SWITCH_OUT:
-				switchOut(boxes);
-				break;
-			case SWITCH_HOR:
-				switchHorizontal(boxes);
-				break;
-			case SWITCH_BAK:
-				switchBack(boxes);
-				break;
-			case END:
-				endMove(boxes);
-				break;
-		}
-		return true;
+// set all the boxes to their ending positions
+void move::end() {
+	crtPhase = END;
+	stepsRemain = ENDFRAMES;
+}
+
+// modify the current positions according to the phases and remaining steps
+// return true if there are still remaining steps, false if not
+bool move::nextFrame(Boxes &boxes) {
+	if(stepsRemain == 0) return false;
+	else stepsRemain -= 1;
+	switch(crtPhase) {
+		case BEGIN:
+			beginMove(boxes);
+			break;
+		case SWITCH_OUT:
+			switchOut(boxes);
+			break;
+		case SWITCH_HOR:
+			switchHorizontal(boxes);
+			break;
+		case SWITCH_BAK:
+			switchBack(boxes);
+			break;
+		case END:
+			endMove(boxes);
+			break;
 	}
+	return true;
 }
