@@ -1,6 +1,6 @@
 
 #include "../headers/command.h"
-#include 
+#include "Arduino.h"
 
 namespace command {
 	enum Command {
@@ -15,10 +15,16 @@ namespace command {
 		SETTING_START,
 		SETTING_MENU
 	};
+
+	void transferBox(Boxes& boxes) {
+		
+	}
 }
 
 void command::plotAnima(Boxes& boxes) {
-	display::plotAnima(boxes);
+	Serial.print(Command::PLOT_ANIMA);
+	Serial.print(' ');
+	transferBox();
 }
 
 void command::choose(Boxes& boxes, int boxNo) {
