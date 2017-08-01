@@ -78,10 +78,15 @@ namespace game {
 		delay(1000);
 		display::gameOpen(boxes, select);
 		delay(1000);
+		display::ready("");
 		if (choice == select) {
 			display::rightOpen(boxes, select);
+			delay(1000);
+			display::ready("You Win! :)");
 		} else {
 			display::wrongOpen(boxes, select);
+			delay(1000);
+			display::ready("You Lose! :(");
 		}
 		delay(1000);
 	}
