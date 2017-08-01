@@ -179,4 +179,8 @@ namespace display {
 		choose(boxes, 0);
 		ready("Choose your box:");
 	}
+
+	void gameOpen(Boxes& boxes, int select) {
+		
+	}
 }

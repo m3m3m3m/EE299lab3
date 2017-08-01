@@ -9,6 +9,8 @@ namespace display {
 	void plotAnima(Boxes&);		// plot animation
 	void choose(Boxes&, int);	// select one box
 	void gameStart(Boxes&);		// the start screen
+	void gameEnd(Boxes&);		// the end screen
+	void gameOpen(Boxes&, int);	// open the box
 	void ready(char const*);	// display info in the first line
 }
 
