@@ -65,14 +65,14 @@ namespace move {
 	// move the certain box left by step bit(s)
 	void moveLeft(Boxes &boxes, int boxNo, int step = 1) {
 		if(getCol(boxes,boxNo) == LEFTCOL) return;
-		if(getCol(boxes,boxNo) < LEFTCOL) setCol(boxes,boxNo,LEFTCOL);
+		if(getCol(boxes,boxNo) - step < LEFTCOL) setCol(boxes,boxNo,LEFTCOL);
 		else boxes.pos[boxNo].c -= step;
 	}
 
 	// move the certain box right by step bit(s)
 	void moveRight(Boxes &boxes, int boxNo, int step = 1) {
 		if(getCol(boxes,boxNo) == RIGHTCOL) return;
-		if(getCol(boxes,boxNo) > RIGHTCOL) setCol(boxes,boxNo,RIGHTCOL);
+		if(getCol(boxes,boxNo) + step > RIGHTCOL) setCol(boxes,boxNo,RIGHTCOL);
 		else boxes.pos[boxNo].c += step;
 	}
 
