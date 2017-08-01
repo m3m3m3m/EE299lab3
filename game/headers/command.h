@@ -13,5 +13,6 @@ namespace command{
 	void settingStart();		// prepare for the setting page
 	void settingMenu(			// display a line of setting item
 		char const*,int,int,int,int);
+	void receiveEvent();		// receive a command and execute it
 }
 #endif	// COMMAND_H
