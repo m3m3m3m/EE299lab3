@@ -77,7 +77,7 @@ namespace move {
 		int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
 		for(int i = 0;i<boxes.num;i++)
 		{	
-			int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 1);
+			int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 2);
 			setCol(boxes,i,crtCol);
 			setRow(boxes,i,BLOCKHEIGHT);
 		}
@@ -148,7 +148,7 @@ namespace move {
 		int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
 		for(int i = 0;i<boxes.num;i++)
 		{	
-			int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 1);
+			int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 2);
 			setCol(boxes,i,crtCol);
 			setRow(boxes,i,BEGINHEIGHT);
 		}
