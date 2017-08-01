@@ -3,9 +3,15 @@
 #include "../headers/game.h"
 #include "../headers/move.h"
 #include "../headers/display.h"
+#include "../headers/control.h"
 
 #define DELAY delay(20)
 #define RANDOM_CLOCKWIZE random(0, 2)
+
+#define NUM 0
+#define SPEED 1
+#define DIFFI 2
+#define SETTING_MENU(x, l) display::settingMenu(script[x], *settings[x], mins[x], maxs[x], l)
 
 namespace game {
 
@@ -16,7 +22,16 @@ namespace game {
 	int diffi = 1;	// the times of moving = 5 * diffi + 5
 	int choice = 1;
 
-	inline int step() {
+	int *settings[] = {&num, &speed, &diffi};
+	int mins[] = {3, 1, 1};
+	int maxs[] = {7, 7, 7};
+	char script[3][11] = {
+		"Box Number",
+		"Move Speed",
+		"Difficulty"
+	};
+
+	inline int _step() {
 		return random((speed + 1) / 2, (speed + 4) / 2);
 	}
 
@@ -26,7 +41,7 @@ namespace game {
 		display::gameStart(boxes);
 		delay(1000);
 		display::choose(boxes, choice);
-		delay(1000);
+		WAIT_FOR_CONFIRM DELAY;
 		display::ready("3");
 		delay(1000);
 		display::ready("2");
@@ -58,7 +73,7 @@ namespace game {
 			move::swap(
 				boxes, box1, box2, 
 				RANDOM_CLOCKWIZE,
-				step()
+				_step()
 			);
 			while (move::nextFrame(boxes)) {
 				display::plotAnima(boxes);
@@ -75,7 +90,7 @@ namespace game {
 		delay(1000);
 		int select = random(0, num);
 		display::choose(boxes, select);
-		delay(1000);
+		WAIT_FOR_CONFIRM DELAY;
 		display::gameOpen(boxes, select);
 		delay(1000);
 		display::ready("");
@@ -88,6 +103,15 @@ namespace game {
 			delay(1000);
 			display::ready("You Lose! :(");
 		}
-		delay(1000);
+		WAIT_FOR_CONFIRM DELAY;
+		setting();
+	}
+
+	void setting() {
+		int settingLine = NUM;
+		display::settingStart();
+		SETTING_MENU(NUM, 0);
+		SETTING_MENU(SPEED, 1);
+		WAIT_FOR_CONFIRM DELAY;
 	}
 }

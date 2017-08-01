@@ -17,4 +17,7 @@
 #define MAX_BOXES 8
 #define MAX_CHARS 8
 
+#define SETTING_PIN 12
+#define CONFIRM_PIN 12
+
 #endif	// CONSTANT_H

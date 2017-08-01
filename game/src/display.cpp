@@ -16,7 +16,6 @@
 #define BRACKETL (char)6
 #define BRACKETR (char)7
 
-
 namespace display {
 
 	LiquidCrystal *lcd;
@@ -157,6 +156,7 @@ namespace display {
 	}
 
 	void gameStart(Boxes& boxes) {
+		lcd->clear();
 		lcd->createChar(BOX, box);
 		lcd->createChar(BRACKETL, bracketL);
 		lcd->createChar(BRACKETR, bracketR);

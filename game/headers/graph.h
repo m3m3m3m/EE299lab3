@@ -659,6 +659,6 @@ static byte rightArrow[] = {
 	B11100,
 	B11000,
 	B10000
-}
+};
 
 #endif	// GRAPH_H

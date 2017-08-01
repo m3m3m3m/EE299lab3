@@ -22,7 +22,7 @@ struct Map {
 
 namespace game {
 	void newGame();
-	void settings();
+	void setting();
 }
 
 namespace master {

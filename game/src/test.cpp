@@ -2,21 +2,13 @@
 #include "Arduino.h"
 #include "../headers/display.h"
 #include "../headers/move.h"
-
-Boxes boxes = {
-	.num = 7,
-	.pos = {
-		{2, 8},
-		{38, 8},
-		{44, 8},
-		{-2, 2}
-	}
-};
+#include "../headers/control.h"
 
 namespace test {
 	void setup() {
 		Serial.begin(BAUD_RATE);
 		display::begin();
+		control::begin();
 		randomSeed(analogRead(0));
 	}
 
