@@ -7,12 +7,15 @@
 #define EACH_ROW(i) (int i = 0; i < LCD_HEIGHT; i ++)
 #define EACH_BOX(i) (int i = 0; i < boxes.num; i ++)
 
+#define LEFTARROW (char)0
+#define RIGHTARROW (char)1
 #define BOX (char)2
 #define OPENBOX (char)3
 #define OPENRIGHT (char)4
 #define OPENWRONG (char)5
 #define BRACKETL (char)6
 #define BRACKETR (char)7
+
 
 namespace display {
 
@@ -204,5 +207,22 @@ namespace display {
 		lcd->print(' ');
 		lcd->setCursor(col+1,1);
 		lcd->print(' ');
+	}
+
+	void settingStart() {
+		lcd->clear();
+		lcd->createChar(LEFTARROW,leftArrow);
+		lcd->createChar(RIGHTARROW,rightArrow);
+	}
+
+	void settingMenu(char const* item, int value, int min, int max, int line) {
+		lcd->setCursor(0,line);
+		lcd->print(item);
+		lcd->print("   ");
+		if(min < value) lcd->print(LEFTARROW);
+		else lcd->print(" ");
+		lcd->print(value);
+		if(max > value) lcd->print(RIGHTARROW);
+		else lcd->print(" ");
 	}
 }

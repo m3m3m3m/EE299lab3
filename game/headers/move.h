@@ -10,4 +10,4 @@ namespace move {
 	bool nextFrame(Boxes&);
 }
 
-#endif
+#endif	// MOVE_H

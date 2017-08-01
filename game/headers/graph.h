@@ -639,4 +639,26 @@ static byte openWrong[] = {
 	B10001
 };
 
-#endif
+static byte leftArrow[] = {
+	B00000,
+	B00001,
+	B00011,
+	B00111,
+	B01111,
+	B00111,
+	B00011,
+	B00001
+};
+
+static byte rightArrow[] = {
+	B00000,
+	B10000,
+	B11000,
+	B11100,
+	B11110,
+	B11100,
+	B11000,
+	B10000
+}
+
+#endif	// GRAPH_H

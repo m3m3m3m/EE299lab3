@@ -14,6 +14,9 @@ namespace display {
 	void rightOpen(Boxes&, int);// open right
 	void wrongOpen(Boxes&, int);// open wrong
 	void ready(char const*);	// display info in the first line
+	void settingStart();		// prepare for the setting page
+	void settingMenu(			// display a line of setting item
+		char const*,int,int,int,int);				
 }
 
 #endif	// DISPLAY_H

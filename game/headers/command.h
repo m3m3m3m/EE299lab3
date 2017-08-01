@@ -7,4 +7,4 @@ namespace command{
 	void gameStart(Boxes&);		// the start screen
 	void ready(char const*);	// display info in the first line
 }
-#endif
+#endif	// COMMAND_H
