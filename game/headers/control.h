@@ -6,4 +6,4 @@ namespace control {
 	bool confirm();
 }
 
-#define WAIT_FOR_CONFIRM while(!control::confirm())
+#define WAIT_FOR_CONFIRMING while(!control::confirm())

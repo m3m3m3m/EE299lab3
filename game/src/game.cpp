@@ -49,7 +49,7 @@ void game::newGame() {
 	display::gameStart(boxes);
 	delay(1000);
 	display::choose(boxes, choice);
-	WAIT_FOR_CONFIRM DELAY;
+	WAIT_FOR_CONFIRMING DELAY;
 	display::ready("3");
 	delay(1000);
 	display::ready("2");
@@ -98,7 +98,7 @@ void game::newGame() {
 	delay(1000);
 	int select = random(0, num);
 	display::choose(boxes, select);
-	WAIT_FOR_CONFIRM DELAY;
+	WAIT_FOR_CONFIRMING DELAY;
 	display::gameOpen(boxes, select);
 	delay(1000);
 	display::ready("");
@@ -110,7 +110,7 @@ void game::newGame() {
 		display::wrongOpen(boxes, select);
 		delay(1000);
 		display::ready("You Lose! :(");
-		WAIT_FOR_CONFIRM DELAY;
+		WAIT_FOR_CONFIRMING DELAY;
 		display::ready("The answer is:");
 		delay(1000);
 		display::gameOpen(boxes, choice);
@@ -118,7 +118,7 @@ void game::newGame() {
 		display::ready("");
 		display::rightOpen(boxes, choice);
 	}
-	WAIT_FOR_CONFIRM DELAY;
+	WAIT_FOR_CONFIRMING DELAY;
 	setting();
 }
 
@@ -127,5 +127,5 @@ void game::setting() {
 	display::settingStart();
 	SETTING_MENU(NUM, 0);
 	SETTING_MENU(SPEED, 1);
-	WAIT_FOR_CONFIRM DELAY;
+	WAIT_FOR_CONFIRMING DELAY;
 }
