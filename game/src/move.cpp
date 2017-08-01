@@ -74,9 +74,10 @@ namespace move {
 	// set all the box in boxes to the central from left to right
 	void initPos(Boxes &boxes)
 	{
+		int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
 		for(int i = 0;i<boxes.num;i++)
 		{	
-			int crtCol = block2col((i + 1) * (blocksBetweenBox + 1));
+			int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 1);
 			setCol(boxes,i,crtCol);
 			setRow(boxes,i,BLOCKHEIGHT);
 		}
