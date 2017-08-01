@@ -2,7 +2,14 @@
 #include "Arduino.h"
 #include "../headers/game.h"
 #include "../headers/move.h"
+
+#if ROLE == MASTER
+#include "../headers/command.h"
+namespace display = command;
+#else
 #include "../headers/display.h"
+#endif	// ROLE
+
 #include "../headers/control.h"
 
 #define DELAY delay(20)
@@ -15,8 +22,8 @@
 
 namespace game {
 
-	int num = 3;	// number of boxes
-	int speed = 5;	// the speed level
+	int num = 7;	// number of boxes
+	int speed = 1;	// the speed level
 					// minspeed = (speed + 1) / 2
 					// maxspeed = (speed + 4) / 2
 	int diffi = 1;	// the times of moving = 5 * diffi + 5
@@ -103,6 +110,13 @@ void game::newGame() {
 		display::wrongOpen(boxes, select);
 		delay(1000);
 		display::ready("You Lose! :(");
+		WAIT_FOR_CONFIRM DELAY;
+		display::ready("The answer is:");
+		delay(1000);
+		display::gameOpen(boxes, choice);
+		delay(1000);
+		display::ready("");
+		display::rightOpen(boxes, choice);
 	}
 	WAIT_FOR_CONFIRM DELAY;
 	setting();

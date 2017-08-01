@@ -1,8 +1,22 @@
-#include "../headers/display.h"
+
+#include "../headers/command.h"
+#include 
 
 namespace command {
-	
+	enum Command {
+		PLOT_ANIMA,
+		CHOOSE,
+		GAME_START,
+		GAME_END,
+		GAME_OPEN,
+		RIGHT_OPEN,
+		WRONG_OPEN，
+		READY,
+		SETTING_START,
+		SETTING_MENU
+	};
 }
+
 void command::plotAnima(Boxes& boxes) {
 	display::plotAnima(boxes);
 }
@@ -39,6 +53,7 @@ void command::settingStart() {
 	display::settingStart();
 }
 
-void command::settingMenu(char const* item, int value, int min, int max, int line) {
+void command::settingMenu
+(char const* item, int value, int min, int max, int line) {
 	display::settingMenu(item, value, min, max, line);
 }
