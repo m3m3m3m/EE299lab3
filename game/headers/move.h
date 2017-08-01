@@ -4,7 +4,7 @@
 #include "game.h"
 
 namespace move {
-	void swap(Boxes&,int boxA, int boxB, bool clockwise);
+	void swap(Boxes&,int boxA, int boxB, bool clockwise, int step);
 	void begin(Boxes&);
 	void end();
 	bool nextFrame(Boxes&);

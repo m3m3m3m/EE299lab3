@@ -25,7 +25,7 @@ namespace test {
 	void loop() {
 		for (int i = 1; i > 0; i --)
 			if (!move::nextFrame(boxes)) {
-				move::swap(boxes, 0, 5, false);
+				move::swap(boxes, 0, 5, false,1);
 			}
 		display::plotAnima(boxes);
 		delay(200);

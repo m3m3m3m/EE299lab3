@@ -11,7 +11,7 @@
 #define TOPROW 2
 #define BOTTOMROW 14
 #define LEFTCOL 2
-#define RIGHTROL 92
+#define RIGHTCOL 92
 
 namespace move {
 	enum phase {BEGIN, SWITCH_OUT, SWITCH_HOR, SWITCH_BAK, END} crtPhase;
@@ -38,7 +38,7 @@ namespace move {
 
 	// set the column of the central bit of the certain box
 	void setCol(Boxes &boxes, int boxNo, int col) {
-		if(col < LEFTCOL || col > RIGHTROL) return;
+		if(col < LEFTCOL || col > RIGHTCOL) return;
 		boxes.pos[boxNo].c = col;
 	}
 
@@ -52,7 +52,7 @@ namespace move {
 	void moveDown(Boxes &boxes, int boxNo, int step = 1) {
 		if(getRow(boxes,boxNo) == BOTTOMROW) return;
 		if(getRow(boxes,boxNo) + step > BOTTOMROW) setRow(boxes,boxNo,BOTTOMROW);
-		else oxes.pos[boxNo].r += step;
+		else boxes.pos[boxNo].r += step;
 	}
 
 	// move the certain box up by step bit(s)
@@ -71,7 +71,7 @@ namespace move {
 
 	// move the certain box right by step bit(s)
 	void moveRight(Boxes &boxes, int boxNo, int step = 1) {
-		if(getCol(boxes,boxNo) == RIGHTROL) return;
+		if(getCol(boxes,boxNo) == RIGHTCOL) return;
 		if(getCol(boxes,boxNo) > RIGHTCOL) setCol(boxes,boxNo,RIGHTCOL);
 		else boxes.pos[boxNo].c += step;
 	}
@@ -160,7 +160,7 @@ namespace move {
 	}
 
 	// record the number of the two swapped boxes and the direction
-	void swap(Boxes &boxes, int boxA, int boxB, bool clockwise,int step = 1) {
+	void swap(Boxes &boxes, int boxA, int boxB, bool clockwise,int step) {
 		crtPhase = SWITCH_OUT;
 		initPos(boxes);
 		if (boxA < boxB) {
