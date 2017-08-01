@@ -143,10 +143,11 @@ namespace move {
 	void begin(Boxes &boxes) {
 		crtPhase = BEGIN;
 		stepsRemain = BEGINFRAMES;
-		blocksBetweenBox = (LCDWIDTH + boxes.num) / (boxes.num + 1) - 1;
+		blocksBetweenBox = LCDWIDTH / boxes.num - 1;
+		int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
 		for(int i = 0;i<boxes.num;i++)
 		{	
-			int crtCol = block2col((i + 1) * (blocksBetweenBox + 1));
+			int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 1);
 			setCol(boxes,i,crtCol);
 			setRow(boxes,i,BEGINHEIGHT);
 		}
