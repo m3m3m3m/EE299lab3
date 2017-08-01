@@ -15,6 +15,7 @@
 
 namespace move {
 	enum phase {BEGIN, SWITCH_OUT, SWITCH_HOR, SWITCH_BAK, END} crtPhase;
+	int stepLen;
 	int stepsRemain;
 	int switchBoxL, switchBoxR;
 	bool switchClockwise;
@@ -50,25 +51,29 @@ namespace move {
 	// move the certain box down by step bit(s)
 	void moveDown(Boxes &boxes, int boxNo, int step = 1) {
 		if(getRow(boxes,boxNo) == BOTTOMROW) return;
-		boxes.pos[boxNo].r += step;
+		if(getRow(boxes,boxNo) + step > BOTTOMROW) setRow(boxes,boxNo,BOTTOMROW);
+		else oxes.pos[boxNo].r += step;
 	}
 
 	// move the certain box up by step bit(s)
 	void moveUp(Boxes &boxes, int boxNo, int step = 1) {
 		if(getRow(boxes,boxNo) == TOPROW) return;
-		boxes.pos[boxNo].r -= step;
+		if(getRow(boxes,boxNo) - step < TOPROW) setRow(boxes,boxNo,TOPROW);
+		else boxes.pos[boxNo].r -= step;
 	}
 
 	// move the certain box left by step bit(s)
 	void moveLeft(Boxes &boxes, int boxNo, int step = 1) {
 		if(getCol(boxes,boxNo) == LEFTCOL) return;
-		boxes.pos[boxNo].c -= step;
+		if(getCol(boxes,boxNo) < LEFTCOL) setCol(boxes,boxNo,LEFTCOL);
+		else boxes.pos[boxNo].c -= step;
 	}
 
 	// move the certain box right by step bit(s)
 	void moveRight(Boxes &boxes, int boxNo, int step = 1) {
 		if(getCol(boxes,boxNo) == RIGHTROL) return;
-		boxes.pos[boxNo].c += step;
+		if(getCol(boxes,boxNo) > RIGHTCOL) setCol(boxes,boxNo,RIGHTCOL);
+		else boxes.pos[boxNo].c += step;
 	}
 
 	// set all the box in boxes to the central from left to right
@@ -86,18 +91,18 @@ namespace move {
 	// move all the boxes up for 1 bit
 	void beginMove(Boxes &boxes) {
 		for(int i = 0;i<boxes.num;i++) {
-			moveUp(boxes,i);
+			moveUp(boxes,i,stepLen);
 		}
 	}
 
 	// move the two swapped boxes out of the queue by 1 bit according to the direction
 	void switchOut(Boxes &boxes) {
 		if(switchClockwise) {
-			moveUp(boxes,switchBoxL);
-			moveDown(boxes,switchBoxR);
+			moveUp(boxes,switchBoxL,stepLen);
+			moveDown(boxes,switchBoxR,stepLen);
 		} else {
-			moveUp(boxes,switchBoxR);
-			moveDown(boxes,switchBoxL);
+			moveUp(boxes,switchBoxR,stepLen);
+			moveDown(boxes,switchBoxL,stepLen);
 		}
 
 		if(getRow(boxes,switchBoxL) == (switchClockwise ? TOPROW : BOTTOMROW)) {
@@ -109,11 +114,11 @@ namespace move {
 	// move the two swapped boxes horizontally by 1 bit according to the direction
 	void switchHorizontal(Boxes &boxes) {
 		if(switchClockwise) {
-			moveRight(boxes,switchBoxL);
-			moveLeft(boxes,switchBoxR);
+			moveRight(boxes,switchBoxL,stepLen);
+			moveLeft(boxes,switchBoxR,stepLen);
 		} else {
-			moveRight(boxes,switchBoxL);
-			moveLeft(boxes,switchBoxR);
+			moveRight(boxes,switchBoxL,stepLen);
+			moveLeft(boxes,switchBoxR,stepLen);
 		}
 
 		if(stepsRemain == 0) {
@@ -125,18 +130,18 @@ namespace move {
 	// move the two swapped boxes back to the queue by 1 bit according to the direction
 	void switchBack(Boxes &boxes) {
 		if(switchClockwise) {
-			moveDown(boxes,switchBoxL);
-			moveUp(boxes,switchBoxR);
+			moveDown(boxes,switchBoxL,stepLen);
+			moveUp(boxes,switchBoxR,stepLen);
 		} else {
-			moveDown(boxes,switchBoxR);
-			moveUp(boxes,switchBoxL);
+			moveDown(boxes,switchBoxR,stepLen);
+			moveUp(boxes,switchBoxL,stepLen);
 		}
 	}
 
 	// move all the boxes down by 1 bit
 	void endMove(Boxes &boxes) {
 		for(int i = 0;i<boxes.num;i++) {
-			moveDown(boxes,i);
+			moveDown(boxes,i,stepLen);
 		}
 	}
 
@@ -155,7 +160,7 @@ namespace move {
 	}
 
 	// record the number of the two swapped boxes and the direction
-	void swap(Boxes &boxes, int boxA, int boxB, bool clockwise) {
+	void swap(Boxes &boxes, int boxA, int boxB, bool clockwise,int step = 1) {
 		crtPhase = SWITCH_OUT;
 		initPos(boxes);
 		if (boxA < boxB) {
@@ -166,6 +171,7 @@ namespace move {
 			switchBoxR = boxA;
 		}
 		switchClockwise = clockwise;
+		stepLen = step;
 
 		stepsRemain = MOVEVERSTEPS;
 	}
