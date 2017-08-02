@@ -137,7 +137,7 @@ void game::newGame() {
 	// command::choose(choice);
 	control::attachPad(
 		&nothing, &chooseRight, &nothing, &chooseLeft, 
-		&goToSetting, &confirm, &tutorial, &nothing
+		&goToSetting, &confirm, &goToTutorial, &nothing
 	);
 
 	command::ready("3");

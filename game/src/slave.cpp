@@ -5,18 +5,20 @@
 #include "../headers/display.h"
 
 #define TILT 11
+#define BUZZER 9
 
 void slave::setup() {
+	pinMode(BUZZER, OUTPUT);
 	display::begin();
 	Serial.begin(BAUD_RATE);
-	randomSeed(analogRead(0));
+	randomSeed(analogRead(12));
 }
 
 void slave::loop() {
 	if (Serial.available() > 0) {
 		command::receiveEvent();
 	}
-	if (digitalRead(11)) {
+	if (digitalRead(TILT)) {
 		display::clear();
 	}
 }
