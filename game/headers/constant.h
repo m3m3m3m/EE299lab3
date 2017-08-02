@@ -19,5 +19,23 @@
 #define CONFIRM_PIN 3
 #define TUTORIAL_PIN 4
 #define RESTART_PIN 5
+#define X_PIN 8
+#define Y_PIN 9
+#define X_LEFT(x) ((x) < 256)
+#define X_RIGHT(x) ((x) >= 768)
+#define Y_UP(y) ((y) >= 768)
+#define Y_DOWN(y) ((y) < 256)
+
+#define NUM 0
+#define SPEED 1
+#define DIFFI 2
+
+const int _min[] = {3, 1, 1};
+const int _max[] = {7, 7, 7};
+const char script[][11] = {
+	"Box Number",
+	"Move Speed",
+	"Difficulty"
+};
 
 #endif	// CONSTANT_H

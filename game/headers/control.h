@@ -12,9 +12,9 @@ namespace control {
 	bool exitSettings();
 	bool confirm();
 
-	typedef int (*callback)();
+	typedef bool (*callback)();
 
-	Position getButton(callback, callback, callback, callback);
+	bool getButton(callback, callback, callback, callback);
 }
 
 #define WAIT_FOR_CONFIRMING while(!control::confirm())
