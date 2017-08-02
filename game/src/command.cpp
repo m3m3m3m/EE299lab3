@@ -3,10 +3,14 @@
 #include "../headers/game.h"
 #include "../headers/command.h"
 #include "../headers/display.h"
+#include "../headers/move.h"
 
 #define TERMINATOR '\t'
 
 namespace command {
+	int moveNum;
+	int moveStep;
+	Boxes boxes;
 	enum Command {
 		PLOT_ANIMA = 1,
 		CHOOSE,
@@ -17,7 +21,11 @@ namespace command {
 		WRONG_OPEN,
 		READY,
 		SETTING_START,
-		SETTING_MENU
+		SETTING_MENU,
+		MOVE_BEGIN,
+		MOVE_SWAP,
+		MOVE_END,
+		MOVE_SETUP
 	};
 
 	inline void transferString(char const* str) {
@@ -60,9 +68,13 @@ namespace command {
 		}
 	}
 
-	inline void parseMenu() {
-
+	inline void keepMoving(Boxes& boxes) {
+		do {
+			display::plotAnima(boxes);
+			delay(20);
+		} while(move::nextFrame(boxes));
 	}
+
 }
 
 void command::plotAnima(Boxes& boxes) {
@@ -133,10 +145,36 @@ void command::settingMenu
 	transferFinish();
 }
 
+void command::moveBegin(Boxes& boxes) {
+	transferNum(Command::MOVE_BEGIN);
+	transferBox(boxes);
+	transferFinish();
+}
+
+void command::moveSwap
+(Boxes& boxes, int boxA, int boxB, bool clockwise) {
+	transferNum(Command::MOVE_SWAP);
+	transferBox(boxes);
+	transferNum(boxA);
+	transferNum(boxB);
+	transferNum((int) clockwise);
+	transferFinish();
+}
+
+void command::moveEnd() {
+	transferNum(Command::MOVE_END);
+	transferFinish();
+}
+
+void command::moveSetup(int num, int speed) {
+	transferNum(Command::MOVE_SETUP);
+	transferNum(num);
+	transferNum(speed);
+	transferFinish();
+}
+
 void command::receiveEvent() {
-	Boxes boxes;
-	int recNum;
-	int menuVal0,menuVal1,menuVal2,menuVal3;
+	int recVal0,recVal1,recVal2,recVal3;
 	char const* recStr;
 	Command cmd = (Command) Serial.parseInt();
 	switch(cmd) {
@@ -147,9 +185,9 @@ void command::receiveEvent() {
 			break;
 		case Command::CHOOSE:
 			parseBoxes(boxes);
-			recNum = Serial.parseInt();
+			recVal0 = Serial.parseInt();
 			Serial.println("choose");
-			display::choose(boxes,recNum);
+			display::choose(boxes,recVal0);
 			break;
 		case Command::GAME_START:
 			parseBoxes(boxes);
@@ -163,21 +201,21 @@ void command::receiveEvent() {
 			break;
 		case Command::GAME_OPEN:
 			parseBoxes(boxes);
-			recNum = Serial.parseInt();
+			recVal0 = Serial.parseInt();
 			Serial.println("gameOpen");
-			display::gameOpen(boxes,recNum);
+			display::gameOpen(boxes,recVal0);
 			break;
 		case Command::RIGHT_OPEN:
 			parseBoxes(boxes);
-			recNum = Serial.parseInt();
+			recVal0 = Serial.parseInt();
 			Serial.println("rightOpen");
-			display::rightOpen(boxes,recNum);
+			display::rightOpen(boxes,recVal0);
 			break;
 		case Command::WRONG_OPEN:
 			parseBoxes(boxes);
-			recNum = Serial.parseInt();
+			recVal0 = Serial.parseInt();
 			Serial.println("wrongOpen");
-			display::wrongOpen(boxes,recNum);
+			display::wrongOpen(boxes,recVal0);
 			break;
 		case Command::READY:
 			recStr = Serial.readStringUntil(TERMINATOR).c_str();
@@ -190,13 +228,41 @@ void command::receiveEvent() {
 			break;
 		case Command::SETTING_MENU:
 			recStr = Serial.readStringUntil(TERMINATOR).c_str();
-			menuVal0 = Serial.parseInt();
-			menuVal1 = Serial.parseInt();
-			menuVal2 = Serial.parseInt();
-			menuVal3 = Serial.parseInt();
+			recVal0 = Serial.parseInt();
+			recVal1 = Serial.parseInt();
+			recVal2 = Serial.parseInt();
+			recVal3 = Serial.parseInt();
 			Serial.println("settingMenu");
-			display::settingMenu(recStr,menuVal0,menuVal1,menuVal2,menuVal3);
+			display::settingMenu(recStr,recVal0,recVal1,recVal2,recVal3);
+			break;
+		case Command::MOVE_BEGIN:
+			parseBoxes(boxes);
+			Serial.println("moveBegin");
+			move::begin(boxes);
+			keepMoving(boxes);
+			break;
+		case Command::MOVE_SWAP:
+			parseBoxes(boxes);
+			recVal0 = Serial.parseInt();
+			recVal1 = Serial.parseInt();
+			recVal2 = Serial.parseInt();
+			Serial.println("moveSwap");
+			move::swap(boxes,recVal0,recVal1,(bool)recVal2,moveStep);
+			keepMoving(boxes);
+			break;
+		case Command::MOVE_END:
+			Serial.println("moveEnd");
+			move::end();
+			keepMoving(boxes);
+			break;
+		case Command::MOVE_SETUP:
+			moveNum = Serial.parseInt();
+			int speed = Serial.parseInt();
+			moveStep = random((speed + 1) / 2, (speed + 4) / 2);
+			Serial.println("moveSetup");
 			break;
 	}
 }
+
+
 

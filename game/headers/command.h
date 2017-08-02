@@ -14,5 +14,10 @@ namespace command{
 	void settingMenu(			// display a line of setting item
 		char const*,int,int,int,int);
 	void receiveEvent();		// receive a command and execute it
+	void moveBegin(Boxes&);		// begin moving
+	void moveSwap(				// swap two boxes
+		Boxes&,int,int,bool);
+	void moveEnd();				// end moving
+	void moveSetup(int,int);	// setting number and speed
 }
 #endif	// COMMAND_H
