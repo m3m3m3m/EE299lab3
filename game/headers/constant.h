@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      constant.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines global constants
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
 
 #ifndef CONSTANT_H
 #define CONSTANT_H

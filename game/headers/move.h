@@ -1,3 +1,15 @@
+//----------------------------------------------------------------
+//  Module name:
+//      move.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines coordinate computing methods for 
+//		moving boxes
+//  Author:
+//      Man Sun
+//----------------------------------------------------------------
+
 #ifndef MOVE_H
 #define MOVE_H
 

@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      command.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements commands for XBee transfer
+//  Author:
+//      Man Sun, Mingxiao An
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include "../headers/game.h"

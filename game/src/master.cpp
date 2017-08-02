@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      master.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements the master's behavior
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include "../headers/game.h"

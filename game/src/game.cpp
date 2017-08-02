@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      game.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements game, setting, and tutorial control
+//  Author:
+//      Mingxiao An, Man Sun
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include "../headers/game.h"

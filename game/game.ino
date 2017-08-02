@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      game.ino
+//  Languange:
+//      Wiring/Arduino
+//  Description:
+//      The module is the top module of the shell game
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include "headers/game.h"

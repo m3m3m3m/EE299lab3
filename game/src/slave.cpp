@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      slave.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements the slave's behavior
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include "../headers/game.h"

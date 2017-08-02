@@ -1,3 +1,14 @@
+//----------------------------------------------------------------
+//  Module name:
+//      graph.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines character bitmaps to show on lcd
+//  Author:
+//      Man Sun
+//----------------------------------------------------------------
+
 #ifndef GRAPH_H
 #define GRAPH_H
 

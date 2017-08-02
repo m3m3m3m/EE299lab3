@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      sound.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines display methods
+//  Author:
+//      Mingxiao An, Man Sun
+//----------------------------------------------------------------
 
 #ifndef DISPLAY_H
 #define DISPLAY_H

@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      control.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines ways to attach functions to buttons
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
 
 namespace control {
 	enum Position {
@@ -28,7 +38,7 @@ namespace control {
 }
 
 #define WAIT_FOR_CONFIRMING \
-	control::attachButton(			\
+	control::attachButton(	\
 		&control::nothing, 	\
 		&control::confirm, 	\
 		&control::nothing, 	\

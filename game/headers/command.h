@@ -1,3 +1,14 @@
+//----------------------------------------------------------------
+//  Module name:
+//      command.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines commands for xbee transfering
+//  Author:
+//      Man Sun, Mingxiao An
+//----------------------------------------------------------------
+
 #ifndef COMMAND_H
 #define COMMAND_H
 

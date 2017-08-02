@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      game.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines basic game-control-related design
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
 
 #ifndef GAME_H
 #define GAME_H

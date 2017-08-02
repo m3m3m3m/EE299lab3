@@ -1,4 +1,13 @@
-
+//----------------------------------------------------------------
+//  Module name:
+//      sound.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines and implements sound effects for buzzer
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
 
 #ifndef SOUND_H
 #define SOUND_H

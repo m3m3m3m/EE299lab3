@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      test.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module is for testing
+//  Author:
+//      Muhan Li, Man Sun, Mingxiao An
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include "../headers/display.h"

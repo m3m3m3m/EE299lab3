@@ -1,3 +1,14 @@
+//----------------------------------------------------------------
+//  Module name:
+//      control.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements the methods that attach functions to
+//		buttons or the joystick pod
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include "../headers/constant.h"
