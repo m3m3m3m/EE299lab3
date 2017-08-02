@@ -661,6 +661,9 @@ static byte rightArrow[] = {
 	B10000
 };
 
-static String tutorial = "BTN_UP - SETTING\nBTN_RT - CONFIRM\nBTN_DN -    HELP\nBTN_LT - NOTHING";
+static String tutorialLine1 = "BTN_UP - SETTING";
+static String tutorialLine2 = "BTN_RT - CONFIRM";
+static String tutorialLine3 = "BTN_DN -    HELP";
+static String tutorialLine4 = "JOYSTK -  MOVING";
 
 #endif	// GRAPH_H

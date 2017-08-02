@@ -25,6 +25,7 @@ namespace display {
 	Map display[LCD_WIDTH][LCD_HEIGHT];
 	Char charList[MAX_CHARS];
 	int charListIndex;
+	int tutorialLine;
 
 	inline int _inCharList(Char ch) {
 		for (int i = 0; i < charListIndex; i ++) {
@@ -251,4 +252,46 @@ void display::settingMenu
 	lcd->print(" ");
 	lcd->setCursor(15, line);
 	lcd->print(" ");
+}
+
+void display::tutorialBegin() {
+	lcd->clear();
+	tutorialLine = 0;
+	lcd->print(tutorialLine1);
+	lcd->setCursor(0, 1);
+	lcd->print(tutorialLine2);
+}
+
+void display::tutorialUp() {
+	switch (tutorialLine) {
+		case 1:
+			lcd->setCursor(0, 0);
+			lcd->print(tutorialLine1);
+			lcd->setCursor(0, 1);
+			lcd->print(tutorialLine2);
+			break;
+		case 2:
+			lcd->setCursor(0, 0);
+			lcd->print(tutorialLine2);
+			lcd->setCursor(0, 1);
+			lcd->print(tutorialLine3);
+			break;		
+	}
+}
+
+void display::tutorialDown() {
+	switch (tutorialLine) {
+		case 0:
+			lcd->setCursor(0, 0);
+			lcd->print(tutorialLine2);
+			lcd->setCursor(0, 1);
+			lcd->print(tutorialLine3);
+			break;
+		case 1:
+			lcd->setCursor(0, 0);
+			lcd->print(tutorialLine3);
+			lcd->setCursor(0, 1);
+			lcd->print(tutorialLine4);
+			break;
+	}
 }
