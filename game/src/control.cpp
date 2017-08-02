@@ -31,9 +31,26 @@ void control::attachButton(callback up, callback right, callback down, callback 
 			UNTIL_RELEASE(LEFT_PIN);
 			flag = (*left)();
 		}
+		delay(5);
 	}
 }
 
-void control::attachButton(callback up, callback right, callback down, callback left) {
-	
+void control::attachRod(callback up, callback right, callback down, callback left) {
+	bool flag = true;
+	while (flag) {
+		if (Y_UP(analogRead(Y_PIN))) {
+			UNTIL_RETURN(Y_UP(analogRead(Y_PIN)));
+			flag = (*up)();
+		} else if (X_RIGHT(analogRead(X_PIN))) {
+			UNTIL_RETURN(X_RIGHT(analogRead(X_PIN)));
+			flag = (*right)();
+		} else if (Y_DOWN(analogRead(Y_PIN))) {
+			UNTIL_RETURN(Y_DOWN(analogRead(Y_PIN)));
+			flag = (*down)();
+		} else if (X_LEFT(analogRead(X_PIN))) {
+			UNTIL_RETURN(X_LEFT(analogRead(X_PIN)));
+			flag = (*left)();
+		}
+		delay(5);
+	}
 }
