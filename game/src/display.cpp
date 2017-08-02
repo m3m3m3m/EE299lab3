@@ -1,4 +1,5 @@
 
+#include "Arduino.h"
 #include <LiquidCrystal.h>
 #include "../headers/display.h"
 #include "../headers/game.h"
@@ -169,6 +170,7 @@ void display::gameStart(Boxes& boxes) {
 	}
 	choose(boxes, 0);
 	ready("Choose to start:");
+	Serial.println("Choose to start");
 }
 
 void display::gameEnd(Boxes& boxes) {
@@ -185,6 +187,7 @@ void display::gameEnd(Boxes& boxes) {
 	}
 	choose(boxes, 0);
 	ready("Choose your box:");
+	Serial.println("Choose to start");
 }
 
 void display::gameOpen(Boxes& boxes, int select) {

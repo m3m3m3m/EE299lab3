@@ -8,7 +8,7 @@
 
 namespace command {
 	enum Command {
-		PLOT_ANIMA,
+		PLOT_ANIMA = 1,
 		CHOOSE,
 		GAME_START,
 		GAME_END,
@@ -44,9 +44,19 @@ namespace command {
 
 	inline void parseBoxes(Boxes& boxes) {
 		boxes.num = Serial.parseInt();
+
+		Serial.print("Boxes: ");
+		Serial.print(boxes.num);
+
 		for(int i = 0;i<boxes.num;i++) {
 			boxes.pos[i].c = Serial.parseInt();
 			boxes.pos[i].r = Serial.parseInt();
+
+			Serial.print(" (");
+			Serial.print(boxes.pos[i].c);
+			Serial.print(",");
+			Serial.print(boxes.pos[i].r);
+			Serial.print(")");
 		}
 	}
 
@@ -127,7 +137,7 @@ void command::receiveEvent() {
 	Boxes boxes;
 	int recNum;
 	int menuVal0,menuVal1,menuVal2,menuVal3;
-	char* recStr;
+	char const* recStr;
 	Command cmd = (Command) Serial.parseInt();
 	switch(cmd) {
 		case Command::PLOT_ANIMA:
@@ -188,6 +198,5 @@ void command::receiveEvent() {
 			display::settingMenu(recStr,menuVal0,menuVal1,menuVal2,menuVal3);
 			break;
 	}
-	Serial.read();
 }
 
