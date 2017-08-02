@@ -26,3 +26,11 @@ namespace control {
 		callback, callback, callback, callback, 
 		callback, callback, callback, callback);
 }
+
+#define WAIT_FOR_CONFIRMING \
+	attachButton(			\
+		&control::nothing, 	\
+		&control::confirm, 	\
+		&control::nothing, 	\
+		&control::nothing	\
+	)
