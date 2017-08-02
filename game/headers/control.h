@@ -1,9 +1,20 @@
 
 namespace control {
+	enum Position {
+		UP,
+		RIGHT,
+		DOWN,
+		LEFT
+	};
+
 	void begin();
 	bool enterSettings();
 	bool exitSettings();
 	bool confirm();
+
+	typedef int (*callback)();
+
+	Position getButton(callback, callback, callback, callback);
 }
 
 #define WAIT_FOR_CONFIRMING while(!control::confirm())

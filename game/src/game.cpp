@@ -59,40 +59,40 @@ void game::newGame() {
 	display::ready("Go");
 	delay(500);
 
-	move::begin(boxes);
-	display::plotAnima(boxes);
-	DELAY;
-	while (move::nextFrame(boxes)) {
-		display::plotAnima(boxes);
-		DELAY;
-	}
-	for (int i = 5 * diffi + 5; i > 0; i --) {
-		// generate random 2 boxes
-		int box1 = random(0, num);
-		int box2 = random(1, num);
-		if (box2 == box1) {
-			box2 = 0;
-		}
-		if (box1 == choice) {
-			choice = box2;
-		} else if (box2 == choice) {
-			choice = box1;
-		}
-		move::swap(
-			boxes, box1, box2, 
-			RANDOM_CLOCKWIZE,
-			_step()
-		);
-		while (move::nextFrame(boxes)) {
-			display::plotAnima(boxes);
-			DELAY;
-		}
-	}
-	move::end();
-	while (move::nextFrame(boxes)) {
-		display::plotAnima(boxes);
-		DELAY;
-	}
+	// move::begin(boxes);
+	// display::plotAnima(boxes);
+	// DELAY;
+	// while (move::nextFrame(boxes)) {
+	// 	display::plotAnima(boxes);
+	// 	DELAY;
+	// }
+	// for (int i = 5 * diffi + 5; i > 0; i --) {
+	// 	// generate random 2 boxes
+	// 	int box1 = random(0, num);
+	// 	int box2 = random(1, num);
+	// 	if (box2 == box1) {
+	// 		box2 = 0;
+	// 	}
+	// 	if (box1 == choice) {
+	// 		choice = box2;
+	// 	} else if (box2 == choice) {
+	// 		choice = box1;
+	// 	}
+	// 	move::swap(
+	// 		boxes, box1, box2, 
+	// 		RANDOM_CLOCKWIZE,
+	// 		_step()
+	// 	);
+	// 	while (move::nextFrame(boxes)) {
+	// 		display::plotAnima(boxes);
+	// 		DELAY;
+	// 	}
+	// }
+	// move::end();
+	// while (move::nextFrame(boxes)) {
+	// 	display::plotAnima(boxes);
+	// 	DELAY;
+	// }
 
 	display::gameEnd(boxes);
 	delay(1000);

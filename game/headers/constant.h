@@ -6,7 +6,7 @@
 #define SLAVE 2
 #define TEST 3
 
-#define ROLE MASTER
+#define ROLE TEST
 
 #define LCD_PORT 2, 3, 4, 5, 6, 7, 8
 #define LCD_WIDTH 16
@@ -17,7 +17,9 @@
 #define MAX_BOXES 8
 #define MAX_CHARS 8
 
-#define SETTING_PIN 12
-#define CONFIRM_PIN 12
+#define SETTING_PIN 2
+#define CONFIRM_PIN 3
+#define TUTORIAL_PIN 4
+#define RESTART_PIN 5
 
 #endif	// CONSTANT_H
