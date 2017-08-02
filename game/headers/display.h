@@ -6,6 +6,7 @@
 #include "Arduino.h"
 
 namespace display {
+	void clear();
 	void begin();				// initialize lcd
 	void plotAnima(Boxes&);		// plot animation
 	void choose(Boxes&, int);	// select one box

@@ -4,6 +4,7 @@
 #include "../headers/display.h"
 #include "../headers/game.h"
 #include "../headers/graph.h"
+#include "../headers/sound.h"
 
 #define EACH_COL(i) (int i = 0; i < LCD_WIDTH; i ++)
 #define EACH_ROW(i) (int i = 0; i < LCD_HEIGHT; i ++)
@@ -71,6 +72,10 @@ namespace display {
 			lcd->print(display[i][1].smap);
 		}
 	}
+}
+
+void display::clear() {
+	lcd->clear();
 }
 
 void display::begin() {
@@ -209,6 +214,7 @@ void display::rightOpen(Boxes& boxes, int select) {
 	lcd->print(' ');
 	lcd->setCursor(col+1,1);
 	lcd->print(' ');
+	soundSuccess();
 }
 
 void display::wrongOpen(Boxes& boxes, int select) {
@@ -219,6 +225,7 @@ void display::wrongOpen(Boxes& boxes, int select) {
 	lcd->print(' ');
 	lcd->setCursor(col+1,1);
 	lcd->print(' ');
+	soundWA();
 }
 
 void display::settingStart() {

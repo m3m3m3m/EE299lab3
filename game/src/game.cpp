@@ -77,6 +77,7 @@ namespace game {
 				break;
 			case 2:
 				settingLine -= 1;
+				SETTING_MENU(2, 1);
 				SETTING_MENU(1, 0);
 				break;
 		}
@@ -88,6 +89,7 @@ namespace game {
 		switch (settingLine) {
 			case 0: 
 				settingLine += 1;
+				SETTING_MENU(0, 0);
 				SETTING_MENU(1, 1);
 				break;
 			case 1: 

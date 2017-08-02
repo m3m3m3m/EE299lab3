@@ -4,6 +4,8 @@
 #include "../headers/command.h"
 #include "../headers/display.h"
 
+#define TILT 11
+
 void slave::setup() {
 	display::begin();
 	Serial.begin(BAUD_RATE);
@@ -13,5 +15,8 @@ void slave::setup() {
 void slave::loop() {
 	if (Serial.available() > 0) {
 		command::receiveEvent();
+	}
+	if (digitalRead(11)) {
+		display::clear();
 	}
 }
