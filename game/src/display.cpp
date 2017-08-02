@@ -254,7 +254,7 @@ void display::settingMenu
 	lcd->print(" ");
 }
 
-void display::tutorialBegin() {
+void display::tutorialStart() {
 	lcd->clear();
 	tutorialLine = 0;
 	lcd->print(tutorialLine1);
@@ -269,12 +269,14 @@ void display::tutorialUp() {
 			lcd->print(tutorialLine1);
 			lcd->setCursor(0, 1);
 			lcd->print(tutorialLine2);
+			tutorialLine -= 1;
 			break;
 		case 2:
 			lcd->setCursor(0, 0);
 			lcd->print(tutorialLine2);
 			lcd->setCursor(0, 1);
 			lcd->print(tutorialLine3);
+			tutorialLine -= 1;
 			break;		
 	}
 }
@@ -286,12 +288,14 @@ void display::tutorialDown() {
 			lcd->print(tutorialLine2);
 			lcd->setCursor(0, 1);
 			lcd->print(tutorialLine3);
+			tutorialLine += 1;
 			break;
 		case 1:
 			lcd->setCursor(0, 0);
 			lcd->print(tutorialLine3);
 			lcd->setCursor(0, 1);
 			lcd->print(tutorialLine4);
+			tutorialLine += 1;
 			break;
 	}
 }

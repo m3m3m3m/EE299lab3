@@ -18,7 +18,7 @@ namespace command{
 	void moveSwap(int,int);		// swap two boxes
 	void moveEnd();				// end moving
 	void moveSetup(int,int);	// setting number and speed
-	void tutorialBegin();
+	void tutorialStart();
 	bool tutorialEnd();
 	bool tutorialUp();
 	bool tutorialDown();

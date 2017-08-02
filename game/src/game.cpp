@@ -266,8 +266,11 @@ void game::tutorial() {
 		&command::tutorialDown,
 		&nothing,
 		&nothing,
-		&command::tutorialEnd,
-		&command::tutorialEnd,
+		&confirm,
+		&confirm,
 		&nothing
 	);
+	command::moveBegin(num, speed);
+	choice = 0;
+	command::gameStart();
 }
