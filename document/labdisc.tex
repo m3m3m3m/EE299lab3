@@ -4,3 +4,21 @@ This module is a box-guessing game designed by ourselves. The input is received 
 
 \subsubsection{Specification of the public interface to the module}
 \paragraph{Inputs, Outputs and Side Effects}
+\hfill \newline
+Since there are two boards in our module, we will introduce the two boards separately.
+\subparagraph{Master}
+\hfill \newline
+The input of the master board is a joystick(containing four directions), and four direction buttons. These inputs are received by passing pointers to functions that realize the reactions to different buttons and directions of joystick movement to the public interface of the joysticks and buttons.Users can use joystick to move the cursor to select the box they want to guess before the game starts and the correct box they think in the open box phase. They can also use the joystick to modify the settings. To enter the setting page, they will need to push the up button before the game starts. They can push the right button to confirm after they choose the box to guess, before and after they select the box as their guess, after they finish setting, and after they finish reading the tutorial. They can push the down button before the game starts to read the tutorial and to exit the tutorial page. \\
+\hfill \newline
+Their commands will be transfered to the slave board through serial port, so the output of the master board would be serial that can be checked on the serial monitor on PC. It will send a code number for each commands followed by nothing or some digits or string to be delivered. \\
+\hfill \newline
+Each time the user moves the joystick or pushes a button, some parameters will be changed to help to compute the new display of the screen.
+\subparagraph{Slave}
+\hfill \newline
+The input of the slave board is from the serial port. At the beginning of each time of transmission, a digit code for the type of command will be sent. According to the type of the command, different number of digits or string will be sent. A tilt button also serves as one part of the slave board's input.\\
+\hfill \newline
+The output of the slave board is its LCD screen and a buzzer. Also, it will print what it will do on the serial monitor after each movement.\\
+\hfill \newline
+Depending on the command it receives from the serial port and the tilt button, it will change different local variables such as the number of boxes, the speed of swapping, the cursor position, etc.
+
+\paragraph{Pseudo English description of algorithms, functions, or procedures}
