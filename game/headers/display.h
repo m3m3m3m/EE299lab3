@@ -19,7 +19,10 @@ namespace display {
 	void ready(String&);
 	void settingStart();		// prepare for the setting page
 	void settingMenu(			// display a line of setting item
-		char const*,int,int,int,int);				
+		char const*,int,int,int,int);
+	void tutorialStart();
+	void tutorialUp();
+	void tutorialDown();
 }
 
 #endif	// DISPLAY_H
