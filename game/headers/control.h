@@ -15,9 +15,14 @@ namespace control {
 	// return whether to continue on this attachment
 	typedef bool (*callback)();
 
-	// up, right, down, left
-	void attachButton(callback, callback, callback, callback);
-	void attachRod(callback, callback, callback, callback);
-}
+	bool nothing();
+	bool confirm();
 
-#define WAIT_FOR_CONFIRMING while(!control::confirm())
+	// up, right, down, left
+	void attachRod(callback, callback, callback, callback);
+	void attachButton(callback, callback, callback, callback);
+	// rod * 4, button * 4
+	void attachPad(
+		callback, callback, callback, callback, 
+		callback, callback, callback, callback);
+}

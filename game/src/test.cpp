@@ -32,6 +32,6 @@ void test::setup() {
 
 void test::loop() {
 	Serial.println("Start one");
-	control::attachButton(&_up, &_right, &_down, &_left);
+	control::attachPad(&_up, &_right, &_down, &_left, &_up, &_right, &_down, &_left);
 	Serial.println("Finish one");
 }
