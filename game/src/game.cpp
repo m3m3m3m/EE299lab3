@@ -119,6 +119,11 @@ namespace game {
 		}
 		return true;
 	}
+
+	bool goToTutorial() {
+		tutorial();
+		return true;
+	}
 }
 
 using control::nothing;
@@ -132,7 +137,7 @@ void game::newGame() {
 	// command::choose(choice);
 	control::attachPad(
 		&nothing, &chooseRight, &nothing, &chooseLeft, 
-		&goToSetting, &confirm, &nothing, &nothing
+		&goToSetting, &confirm, &tutorial, &nothing
 	);
 
 	command::ready("3");
@@ -229,12 +234,7 @@ void game::newGame() {
 		command::rightOpen(choice);
 	}
 	
-	control::attachButton(
-		&nothing,
-		&confirm,
-		&nothing,
-		&nothing
-	);
+	WAIT_FOR_CONFIRMING;
 }
 
 void game::setting() {
@@ -256,4 +256,18 @@ void game::setting() {
 	command::moveBegin(num,speed);
 	choice = 0;
 	command::gameStart();
+}
+
+void game::tutorial() {
+	command::tutorialStart();
+	control::attachPad(
+		&command::tutorialUp,
+		&nothing,
+		&command::tutorialDown,
+		&nothing,
+		&nothing,
+		&command::tutorialEnd,
+		&command::tutorialEnd,
+		&nothing
+	);
 }

@@ -23,6 +23,7 @@ struct Map {
 namespace game {
 	void newGame();
 	void setting();
+	void tutorial();
 }
 
 namespace master {

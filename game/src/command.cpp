@@ -24,7 +24,11 @@ namespace command {
 		SETTING_MENU = 10,
 		MOVE_BEGIN,
 		MOVE_SWAP,
-		MOVE_END
+		MOVE_END,
+		TUTORIAL_START,
+		TUTORIAL_DOWN = 15,
+		TUTORIAL_UP,
+		TUTORIAL_END
 	};
 
 	inline void transferString(char const* str) {
@@ -132,6 +136,28 @@ void command::moveEnd() {
 	transferFinish();
 }
 
+void command::tutorialStart() {
+	transferNum(Command::TUTORIAL_START);
+	transferFinish();
+}
+
+bool command::tutorialUp() {
+	transferNum(Command::TUTORIAL_UP);
+	transferFinish();
+	return true;
+}
+
+bool command::tutorialDown() {
+	transferNum(Command::TUTORIAL_DOWN);
+	transferFinish();
+	return true;
+}
+
+bool command::tutorialEnd() {
+	transferNum(Command::TUTORIAL_END);
+	transferFinish();
+	return false;
+}
 
 void command::receiveEvent() {
 	int recVal0,recVal1,recVal2,recVal3;
@@ -213,6 +239,22 @@ void command::receiveEvent() {
 			move::end();
 			keepMoving(boxes);
 			move::begin(boxes);
+			break;
+		case Command::TUTORIAL_START:
+			Serial.println("tutorialStart");
+			display::tutorialStart();
+			break;
+		case Command::TUTORIAL_END:
+			Serial.println("tutorialEnd");
+			// display::tutorialEnd();
+			break;
+		case Command::TUTORIAL_UP:
+			Serial.println("tutorialUp");
+			display::tutorialUp();
+			break;
+		case Command::TUTORIAL_DOWN:
+			Serial.println("tutorialDown");
+			display::tutorialDown();
 			break;
 	}
 }

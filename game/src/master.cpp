@@ -6,6 +6,7 @@
 void master::setup() {
 	Serial.begin(BAUD_RATE);
 	control::begin();
+	game::tutorial();
 }
 
 void master::loop() {
