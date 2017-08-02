@@ -3,10 +3,8 @@
 #include "../headers/constant.h"
 #include "../headers/control.h"
 
-#define UNTIL_FLASE(pin) while (digitalRead(pin)) delay(5)
-#define UNTIL_TRUE(pin) while (!digitalRead(pin)) delay(5)
-
-#define FOREVER whlie (true)
+#define UNTIL_RELEASE(pin) while (!digitalRead(pin)) delay(5)
+#define UNTIL_RETURN(mode) while(!mode) delay(5)
 
 void control::begin() {
 	pinMode(SETTING_PIN, INPUT);
@@ -17,16 +15,25 @@ void control::begin() {
 	pinMode(Y_PIN, INPUT);
 }
 
-Position control::getButton(callback up, callback right, callback down, callback left) {
-	FOREVER {
-		if (!digitalRead(up)) {
-			return up();
-		} else if (!digitalRead(right)) {
-
-		} else if (!digitalRead(down)) {
-
-		} else if (!digitalRead(left){
-
+void control::attachButton(callback up, callback right, callback down, callback left) {
+	bool flag = true;
+	while (flag) {
+		if (!digitalRead(UP_PIN)) {
+			UNTIL_RELEASE(UP_PIN);
+			flag = (*up)();
+		} else if (!digitalRead(RIGHT_PIN)) {
+			UNTIL_RELEASE(RIGHT_PIN);
+			flag = (*right)();
+		} else if (!digitalRead(DOWN_PIN)) {
+			UNTIL_RELEASE(DOWN_PIN);
+			flag = (*down)();
+		} else if (!digitalRead(LEFT_PIN)) {
+			UNTIL_RELEASE(LEFT_PIN);
+			flag = (*left)();
 		}
 	}
+}
+
+void control::attachButton(callback up, callback right, callback down, callback left) {
+	
 }

@@ -14,7 +14,7 @@ namespace control {
 
 	typedef bool (*callback)();
 
-	bool getButton(callback, callback, callback, callback);
+	void attachButton(callback, callback, callback, callback);
 }
 
 #define WAIT_FOR_CONFIRMING while(!control::confirm())

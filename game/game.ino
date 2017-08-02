@@ -2,7 +2,7 @@
 #include "Arduino.h"
 #include "headers/game.h"
 
-#define ROLE SLAVE
+#define ROLE TEST
 
 void setup() {
 	#if ROLE == MASTER

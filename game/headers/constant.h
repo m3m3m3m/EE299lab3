@@ -15,10 +15,16 @@
 #define MAX_BOXES 8
 #define MAX_CHARS 8
 
-#define SETTING_PIN 2
-#define CONFIRM_PIN 3
-#define TUTORIAL_PIN 4
-#define RESTART_PIN 5
+#define UP_PIN 2
+#define RIGHT_PIN 3
+#define DOWN_PIN 4
+#define LEFT_PIN 5
+
+#define SETTING_PIN UP_PIN
+#define CONFIRM_PIN RIGHT_PIN
+#define TUTORIAL_PIN DOWN_PIN
+#define RESTART_PIN LEFT_PIN
+
 #define X_PIN 8
 #define Y_PIN 9
 #define X_LEFT(x) ((x) < 256)
