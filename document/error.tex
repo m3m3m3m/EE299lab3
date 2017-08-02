@@ -1,0 +1,8 @@
+At first, we tried to send only the plotting command in a smaller scale through wireless communication, which means there might be at most 50 commands being sent to the slave in a second. Moreover, we should transfer the coordinates of the boxes for each command. The result was such a mess that we immediate decided that we should try another way, because it seems impossible to know what happened. Then we tried to send commands like \textit{swap a and b on the screen} instead of \textit{plot the boxes at those coordinates}. It didn't work well, but we could analyze it. What we found at last was that the reason we failed again was for the same reason as we failed before the change. The buffer of wireless communication has its limitation size. We could not send command like shooting bullets. If the slave could not read all the data in time, some incoming data would get lost. Thus, we had a few plan to fix it.
+\begin{enumerate}
+	\item Using a queue as a buffer. All the incoming commands are immediately read, but are handled later.
+	\item Staying synchronized. The slave returns a message after finishing handling the previous command. The master should wait until it gets the message.
+	\item Delay brutally. We force the master to delay a variable time based on our estimation of how long time is the slave going to take to handle the command just sent.
+\end{enumerate}
+\hfill \newline
+We did not adopt the first plan, for the reason that it was costly to build a time sharing system in arduino. We have to check whether there are incoming commands when parsing end executing commands. We tried the second plan, but it seemed that the XBee could not support our idea.
