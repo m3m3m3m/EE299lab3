@@ -8,9 +8,9 @@
 #define TERMINATOR '\t'
 
 namespace command {
-	int moveNum;
 	int moveStep;
 	Boxes boxes;
+
 	enum Command {
 		PLOT_ANIMA = 1,
 		CHOOSE,
@@ -38,34 +38,8 @@ namespace command {
 		Serial.print(' ');
 	}
 
-	inline void transferBox(Boxes& boxes) {
-		transferNum(boxes.num);
-		for(int i = 0;i<boxes.num;i++) {
-			transferNum(boxes.pos[i].c);
-			transferNum(boxes.pos[i].r);
-		}
-	}
-
 	inline void transferFinish() {
 		Serial.print('\n');
-	}
-
-	inline void parseBoxes(Boxes& boxes) {
-		boxes.num = Serial.parseInt();
-
-		Serial.print("Boxes: ");
-		Serial.print(boxes.num);
-
-		for(int i = 0;i<boxes.num;i++) {
-			boxes.pos[i].c = Serial.parseInt();
-			boxes.pos[i].r = Serial.parseInt();
-
-			Serial.print(" (");
-			Serial.print(boxes.pos[i].c);
-			Serial.print(",");
-			Serial.print(boxes.pos[i].r);
-			Serial.print(")");
-		}
 	}
 
 	inline void keepMoving(Boxes& boxes) {
@@ -77,48 +51,41 @@ namespace command {
 
 }
 
-void command::plotAnima(Boxes& boxes) {
+void command::plotAnima() {
 	transferNum(Command::PLOT_ANIMA);
-	transferBox(boxes);
 	transferFinish();
 }
 
-void command::choose(Boxes& boxes, int boxNo) {
+void command::choose(int boxNo) {
 	transferNum(Command::CHOOSE);
-	transferBox(boxes);
 	transferNum(boxNo);
 	transferFinish();
 }
 
-void command::gameStart(Boxes& boxes) {
+void command::gameStart() {
 	transferNum(Command::GAME_START);
-	transferBox(boxes);
 	transferFinish();
 }
 
-void command::gameEnd(Boxes& boxes) {
+void command::gameEnd() {
 	transferNum(Command::GAME_END);
-	transferBox(boxes);
 	transferFinish();
 }
 
-void command::gameOpen(Boxes& boxes, int choice) {
+void command::gameOpen(int choice) {
 	transferNum(Command::GAME_OPEN);
-	transferBox(boxes);
 	transferNum(choice);
 	transferFinish();
 }
 
-void command::rightOpen(Boxes& boxes, int choice) {
+void command::rightOpen(int choice) {
 	transferNum(Command::RIGHT_OPEN);
-	transferBox(boxes);
 	transferNum(choice);
 	transferFinish();
 }
 
-void command::wrongOpen(Boxes& boxes, int choice) {
+void command::wrongOpen(int choice) {
 	transferNum(Command::WRONG_OPEN);
-	transferBox(boxes);
 	transferNum(choice);
 	transferFinish();
 }
@@ -145,16 +112,13 @@ void command::settingMenu
 	transferFinish();
 }
 
-void command::moveBegin(Boxes& boxes) {
+void command::moveBegin() {
 	transferNum(Command::MOVE_BEGIN);
-	transferBox(boxes);
 	transferFinish();
 }
 
-void command::moveSwap
-(Boxes& boxes, int boxA, int boxB, bool clockwise) {
+void command::moveSwap(int boxA, int boxB, bool clockwise) {
 	transferNum(Command::MOVE_SWAP);
-	transferBox(boxes);
 	transferNum(boxA);
 	transferNum(boxB);
 	transferNum((int) clockwise);
@@ -168,7 +132,8 @@ void command::moveEnd() {
 
 void command::moveSetup(int num, int speed) {
 	transferNum(Command::MOVE_SETUP);
-	transferNum(num);
+	boxes.num = num;
+	move::begin(boxes);
 	transferNum(speed);
 	transferFinish();
 }
@@ -179,40 +144,33 @@ void command::receiveEvent() {
 	Command cmd = (Command) Serial.parseInt();
 	switch(cmd) {
 		case Command::PLOT_ANIMA:
-			parseBoxes(boxes);
 			Serial.println("plotAnima");
 			display::plotAnima(boxes);
 			break;
 		case Command::CHOOSE:
-			parseBoxes(boxes);
 			recVal0 = Serial.parseInt();
 			Serial.println("choose");
 			display::choose(boxes,recVal0);
 			break;
 		case Command::GAME_START:
-			parseBoxes(boxes);
 			Serial.println("gameStart");
 			display::gameStart(boxes);
 			break;
 		case Command::GAME_END:
-			parseBoxes(boxes);
 			Serial.println("gameEnd");
 			display::gameEnd(boxes);
 			break;
 		case Command::GAME_OPEN:
-			parseBoxes(boxes);
 			recVal0 = Serial.parseInt();
 			Serial.println("gameOpen");
 			display::gameOpen(boxes,recVal0);
 			break;
 		case Command::RIGHT_OPEN:
-			parseBoxes(boxes);
 			recVal0 = Serial.parseInt();
 			Serial.println("rightOpen");
 			display::rightOpen(boxes,recVal0);
 			break;
 		case Command::WRONG_OPEN:
-			parseBoxes(boxes);
 			recVal0 = Serial.parseInt();
 			Serial.println("wrongOpen");
 			display::wrongOpen(boxes,recVal0);
@@ -236,13 +194,11 @@ void command::receiveEvent() {
 			display::settingMenu(recStr,recVal0,recVal1,recVal2,recVal3);
 			break;
 		case Command::MOVE_BEGIN:
-			parseBoxes(boxes);
 			Serial.println("moveBegin");
 			move::begin(boxes);
 			keepMoving(boxes);
 			break;
 		case Command::MOVE_SWAP:
-			parseBoxes(boxes);
 			recVal0 = Serial.parseInt();
 			recVal1 = Serial.parseInt();
 			recVal2 = Serial.parseInt();
@@ -256,7 +212,6 @@ void command::receiveEvent() {
 			keepMoving(boxes);
 			break;
 		case Command::MOVE_SETUP:
-			moveNum = Serial.parseInt();
 			int speed = Serial.parseInt();
 			moveStep = random((speed + 1) / 2, (speed + 4) / 2);
 			Serial.println("moveSetup");

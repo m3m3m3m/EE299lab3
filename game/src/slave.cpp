@@ -11,7 +11,6 @@ void slave::setup() {
 
 void slave::loop() {
 	if (Serial.available() > 0) {
-		Serial.println("Received");
 		command::receiveEvent();
 	}
 }
