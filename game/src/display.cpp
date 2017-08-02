@@ -158,6 +158,13 @@ void display::ready(char const *s) {
 	lcd->print(s);
 }
 
+void display::ready(String& s) {
+	lcd->setCursor(0, 0);
+	lcd->print("                ");
+	lcd->setCursor(0, 0);
+	lcd->print(s);
+}
+
 void display::gameStart(Boxes& boxes) {
 	lcd->clear();
 	lcd->createChar(BOX, box);
@@ -170,7 +177,6 @@ void display::gameStart(Boxes& boxes) {
 	}
 	choose(boxes, 0);
 	ready("Choose to start:");
-	Serial.println("Choose to start");
 }
 
 void display::gameEnd(Boxes& boxes) {
@@ -187,7 +193,6 @@ void display::gameEnd(Boxes& boxes) {
 	}
 	choose(boxes, 0);
 	ready("Choose your box:");
-	Serial.println("Choose to start");
 }
 
 void display::gameOpen(Boxes& boxes, int select) {
@@ -232,4 +237,11 @@ void display::settingMenu
 	lcd->print(value);
 	if(max > value) lcd->print(RIGHTARROW);
 	else lcd->print(" ");
+
+	if (line == 1) line = 0;
+	else line = 1;
+	lcd->setCursor(13, line);
+	lcd->print(" ");
+	lcd->setCursor(15, line);
+	lcd->print(" ");
 }

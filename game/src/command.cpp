@@ -16,16 +16,15 @@ namespace command {
 		CHOOSE,
 		GAME_START,
 		GAME_END,
-		GAME_OPEN,
+		GAME_OPEN = 5,
 		RIGHT_OPEN,
 		WRONG_OPEN,
 		READY,
 		SETTING_START,
-		SETTING_MENU,
+		SETTING_MENU = 10,
 		MOVE_BEGIN,
 		MOVE_SWAP,
-		MOVE_END,
-		MOVE_SETUP
+		MOVE_END
 	};
 
 	inline void transferString(char const* str) {
@@ -136,7 +135,8 @@ void command::moveEnd() {
 
 void command::receiveEvent() {
 	int recVal0,recVal1,recVal2,recVal3;
-	char const* recStr;
+	// char const* recStr;
+	String recStr;
 	bool clkws;
 	Command cmd = (Command) Serial.parseInt();
 	switch(cmd) {
@@ -145,8 +145,9 @@ void command::receiveEvent() {
 			display::plotAnima(boxes);
 			break;
 		case Command::CHOOSE:
-			recVal0 = Serial.parseInt();
 			Serial.println("choose");
+			recVal0 = Serial.parseInt();
+			Serial.println(recVal0);
 			display::choose(boxes,recVal0);
 			break;
 		case Command::GAME_START:
@@ -154,6 +155,7 @@ void command::receiveEvent() {
 			display::gameStart(boxes);
 			break;
 		case Command::GAME_END:
+			move::begin(boxes);
 			Serial.println("gameEnd");
 			display::gameEnd(boxes);
 			break;
@@ -173,8 +175,10 @@ void command::receiveEvent() {
 			display::wrongOpen(boxes,recVal0);
 			break;
 		case Command::READY:
-			recStr = Serial.readStringUntil(TERMINATOR).c_str();
+			// recStr = (Serial.readStringUntil(TERMINATOR)).c_str();
+			recStr = Serial.readStringUntil(TERMINATOR);
 			Serial.println("ready");
+			Serial.println(recStr);
 			display::ready(recStr);
 			break;
 		case Command::SETTING_START:
@@ -208,9 +212,7 @@ void command::receiveEvent() {
 			Serial.println("moveEnd");
 			move::end();
 			keepMoving(boxes);
+			move::begin(boxes);
 			break;
 	}
 }
-
-
-

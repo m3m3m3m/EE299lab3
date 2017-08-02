@@ -7,6 +7,7 @@
 void slave::setup() {
 	display::begin();
 	Serial.begin(BAUD_RATE);
+	randomSeed(analogRead(0));
 }
 
 void slave::loop() {

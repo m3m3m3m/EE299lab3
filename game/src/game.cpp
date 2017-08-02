@@ -4,7 +4,6 @@
 #include "../headers/command.h"
 #include "../headers/control.h"
 
-#define DELAY delay(20)
 #define RANDOM_CLOCKWIZE random(0, 2)
 
 #define NUM 0
@@ -15,31 +14,125 @@
 namespace game {
 
 	int num = 7;	// number of boxes
-	int speed = 1;	// the speed level
+	int speed = 5;	// the speed level
 					// minspeed = (speed + 1) / 2
 					// maxspeed = (speed + 4) / 2
 	int diffi = 1;	// the times of moving = 5 * diffi + 5
-	int choice = 1;
+	int choice = 0;
+	int select = 0;
+	int settingLine = NUM;
+	int cursorLine = 0;
 
 	int *settings[] = {&num, &speed, &diffi};
-	int mins[] = {3, 1, 1};
-	int maxs[] = {7, 7, 7};
-	char script[3][11] = {
-		"Box Number",
-		"Move Speed",
-		"Difficulty"
-	};
 
 	inline int _step() {
 		return random((speed + 1) / 2, (speed + 4) / 2);
 	}
+
+	bool chooseLeft() {
+		if (choice != 0) {
+			choice -= 1;
+			command::choose(choice);
+		}
+		return true;
+	}
+
+	bool chooseRight() {
+		if (choice != num - 1) {
+			choice += 1;
+			command::choose(choice);
+		}
+		return true;
+	}
+
+	bool selectLeft() {
+		if (select != 0) {
+			select -= 1;
+			command::choose(select);
+		}
+		return true;
+	}
+
+	bool selectRight() {
+		if (select != num - 1) {
+			select += 1;
+			command::choose(select);
+		}
+		return true;
+	}
+
+	bool goToSetting() {
+		setting();
+		return true;
+	}
+
+	bool settingUp() {
+		switch (settingLine) {
+			case 0: 
+				break;
+			case 1: 
+				settingLine -= 1;
+				SETTING_MENU(1, 1);
+				SETTING_MENU(0, 0);
+				break;
+			case 2:
+				settingLine -= 1;
+				SETTING_MENU(1, 0);
+				break;
+		}
+		cursorLine = 0;
+		return true;
+	}
+
+	bool settingDown() {
+		switch (settingLine) {
+			case 0: 
+				settingLine += 1;
+				SETTING_MENU(1, 1);
+				break;
+			case 1: 
+				settingLine += 1; 
+				SETTING_MENU(1, 0);
+				SETTING_MENU(2, 1);
+				break;
+			case 2:
+				break;
+		}
+		cursorLine = 1;
+		return true;
+	}
+
+	bool settingRight() {
+		if (*settings[settingLine] < _max[settingLine]) {
+			*settings[settingLine] += 1;
+			SETTING_MENU(settingLine, cursorLine);
+		}
+		return true;
+	}
+
+	bool settingLeft() {
+		if (*settings[settingLine] > _min[settingLine]) {
+			*settings[settingLine] -= 1;
+			SETTING_MENU(settingLine, cursorLine);
+		}
+		return true;
+	}
 }
 
+using control::nothing;
+using control::confirm;
+
 void game::newGame() {
+	command::moveBegin(num,speed);
+	choice = 0;
 	command::gameStart();
 	delay(1000);
-	command::choose(choice);
-	DELAY;
+	// command::choose(choice);
+	control::attachPad(
+		&nothing, &chooseRight, &nothing, &chooseLeft, 
+		&goToSetting, &confirm, &nothing, &nothing
+	);
+
 	command::ready("3");
 	delay(1000);
 	command::ready("2");
@@ -63,8 +156,13 @@ void game::newGame() {
 			choice = box1;
 		}
 		command::moveSwap(box1,box2);
+		int gap = box1 - box2;
+		if (gap < 0) gap = -gap;
+		int delayTime = (2 * gap * (LCD_WIDTH / num) + 2) * 6 * (72 + diffi) / (2 * speed + 1);
+		delay(delayTime);
 	}
 	command::moveEnd();
+
 	// move::begin(boxes);
 	// display::plotAnima(boxes);
 	// DELAY;
@@ -100,11 +198,15 @@ void game::newGame() {
 	// 	DELAY;
 	// }
 
+	WAIT_FOR_CONFIRMING;
+	select = 0;
 	command::gameEnd();
-	delay(1000);
-	int select = random(0, num);
-	command::choose(select);
-	DELAY;
+
+	control::attachPad(
+		&nothing, &selectRight, &nothing, &selectLeft, 
+		&nothing, &confirm, &nothing, &nothing
+	);
+
 	command::gameOpen(select);
 	delay(1000);
 	command::ready("");
@@ -116,7 +218,7 @@ void game::newGame() {
 		command::wrongOpen(select);
 		delay(1000);
 		command::ready("You Lose! :(");
-		DELAY;
+		WAIT_FOR_CONFIRMING;
 		command::ready("The answer is:");
 		delay(1000);
 		command::gameOpen(choice);
@@ -124,14 +226,32 @@ void game::newGame() {
 		command::ready("");
 		command::rightOpen(choice);
 	}
-	DELAY;
-	setting();
+	
+	control::attachButton(
+		&nothing,
+		&confirm,
+		&nothing,
+		&nothing
+	);
 }
 
 void game::setting() {
-	int settingLine = NUM;
+	settingLine = NUM;
+	cursorLine = 0;
 	command::settingStart();
-	SETTING_MENU(NUM, 0);
 	SETTING_MENU(SPEED, 1);
-	DELAY;
+	SETTING_MENU(NUM, 0);
+	control::attachPad(
+		&settingUp,
+		&settingRight,
+		&settingDown,
+		&settingLeft,
+		&confirm,
+		&confirm,
+		&nothing,
+		&nothing
+	);
+	command::moveBegin(num,speed);
+	choice = 0;
+	command::gameStart();
 }

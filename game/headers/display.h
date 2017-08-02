@@ -3,6 +3,7 @@
 #define DISPLAY_H
 
 #include "game.h"
+#include "Arduino.h"
 
 namespace display {
 	void begin();				// initialize lcd
@@ -14,6 +15,7 @@ namespace display {
 	void rightOpen(Boxes&, int);// open right
 	void wrongOpen(Boxes&, int);// open wrong
 	void ready(char const*);	// display info in the first line
+	void ready(String&);
 	void settingStart();		// prepare for the setting page
 	void settingMenu(			// display a line of setting item
 		char const*,int,int,int,int);				

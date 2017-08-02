@@ -28,7 +28,7 @@ namespace control {
 }
 
 #define WAIT_FOR_CONFIRMING \
-	attachButton(			\
+	control::attachButton(			\
 		&control::nothing, 	\
 		&control::confirm, 	\
 		&control::nothing, 	\
