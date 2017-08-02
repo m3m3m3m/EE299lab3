@@ -1,3 +1,28 @@
+//----------------------------------------------------------------
+//  Module name:
+//      move.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements coordinate computing methods for 
+//      moving boxes
+//  Author:
+//      Man Sun
+//----------------------------------------------------------------
+
+#ifndef MOVE_H
+#define MOVE_H
+
+#include "game.h"
+
+namespace move {
+    void swap(Boxes&,int boxA, int boxB, bool clockwise, int step);
+    void begin(Boxes&);
+    void end();
+    bool nextFrame(Boxes&);
+}
+
+#endif  // MOVE_H
 #include "../headers/game.h"
 #include "../headers/move.h"
 

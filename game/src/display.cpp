@@ -1,3 +1,13 @@
+//----------------------------------------------------------------
+//  Module name:
+//      display.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module inplements display methods
+//  Author:
+//      Mingxiao An, Man Sun
+//----------------------------------------------------------------
 
 #include "Arduino.h"
 #include <LiquidCrystal.h>

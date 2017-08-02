@@ -6,7 +6,7 @@
 //  Description:
 //      The module defines character bitmaps to show on lcd
 //  Author:
-//      Man Sun
+//      Man Sun, Muhan Li
 //----------------------------------------------------------------
 
 #ifndef GRAPH_H

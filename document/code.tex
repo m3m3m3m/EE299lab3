@@ -1,0 +1,2517 @@
+\subsection{command.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      command.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines commands for xbee transfering
+//  Author:
+//      Man Sun, Mingxiao An
+//----------------------------------------------------------------
+
+#ifndef COMMAND_H
+#define COMMAND_H
+
+namespace command{
+    void plotAnima();           // plot animation
+    void choose(int);           // select one box
+    void gameStart();           // the start screen
+    void gameEnd();             // the end screen
+    void gameOpen(int);         // open the box
+    void rightOpen(int);        // open right
+    void wrongOpen(int);        // open wrong
+    void ready(char const*);    // display info in the first line
+    void settingStart();        // prepare for the setting page
+    void settingMenu(           // display a line of setting item
+        int,int,int);
+    void receiveEvent();        // receive a command and execute it
+    void moveBegin(int,int);    // begin moving
+    void moveSwap(int,int);     // swap two boxes
+    void moveEnd();             // end moving
+    void moveSetup(int,int);    // setting number and speed
+    void tutorialStart();
+    bool tutorialEnd();
+    bool tutorialUp();
+    bool tutorialDown();
+}
+#endif  // COMMAND_H
+\end{minted}
+
+\subsection{command.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      command.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements commands for XBee transfer
+//  Author:
+//      Man Sun, Mingxiao An
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include "../headers/game.h"
+#include "../headers/command.h"
+#include "../headers/display.h"
+#include "../headers/move.h"
+
+#define TERMINATOR '\t'
+
+namespace command {
+    int speed;
+    Boxes boxes;
+
+    enum Command {
+        PLOT_ANIMA = 1,
+        CHOOSE,
+        GAME_START,
+        GAME_END,
+        GAME_OPEN = 5,
+        RIGHT_OPEN,
+        WRONG_OPEN,
+        READY,
+        SETTING_START,
+        SETTING_MENU = 10,
+        MOVE_BEGIN,
+        MOVE_SWAP,
+        MOVE_END,
+        TUTORIAL_START,
+        TUTORIAL_DOWN = 15,
+        TUTORIAL_UP,
+        TUTORIAL_END
+    };
+
+    inline void transferString(char const* str) {
+        Serial.print(str);
+        Serial.print(TERMINATOR);
+    }
+
+    inline void transferNum(int num) {
+        Serial.print(num);
+        Serial.print(' ');
+    }
+
+    inline void transferFinish() {
+        Serial.print('\n');
+    }
+
+    inline void keepMoving(Boxes& boxes) {
+        do {
+            display::plotAnima(boxes);
+            delay(20);
+        } while(move::nextFrame(boxes));
+    }
+
+    inline int _step() {
+        return random((speed + 1) / 2, (speed + 4) / 2);
+    }
+
+}
+
+void command::plotAnima() {
+    transferNum(Command::PLOT_ANIMA);
+    transferFinish();
+}
+
+void command::choose(int boxNo) {
+    transferNum(Command::CHOOSE);
+    transferNum(boxNo);
+    transferFinish();
+}
+
+void command::gameStart() {
+    transferNum(Command::GAME_START);
+    transferFinish();
+}
+
+void command::gameEnd() {
+    transferNum(Command::GAME_END);
+    transferFinish();
+}
+
+void command::gameOpen(int choice) {
+    transferNum(Command::GAME_OPEN);
+    transferNum(choice);
+    transferFinish();
+}
+
+void command::rightOpen(int choice) {
+    transferNum(Command::RIGHT_OPEN);
+    transferNum(choice);
+    transferFinish();
+}
+
+void command::wrongOpen(int choice) {
+    transferNum(Command::WRONG_OPEN);
+    transferNum(choice);
+    transferFinish();
+}
+
+void command::ready(char const* info) {
+    transferNum(Command::READY);
+    transferString(info);
+    transferFinish();
+}
+
+void command::settingStart() {
+    transferNum(Command::SETTING_START);
+    transferFinish();
+}
+
+void command::settingMenu
+(int itemNo, int value, int line) {
+    transferNum(Command::SETTING_MENU);
+    transferNum(itemNo);
+    transferNum(value);
+    transferNum(line);
+    transferFinish();
+}
+
+void command::moveBegin(int num, int speed) {
+    transferNum(Command::MOVE_BEGIN);
+    transferNum(num);
+    transferNum(speed);
+    transferFinish();
+}
+
+void command::moveSwap(int boxA, int boxB) {
+    transferNum(Command::MOVE_SWAP);
+    transferNum(boxA);
+    transferNum(boxB);
+    transferFinish();
+}
+
+void command::moveEnd() {
+    transferNum(Command::MOVE_END);
+    transferFinish();
+}
+
+void command::tutorialStart() {
+    transferNum(Command::TUTORIAL_START);
+    transferFinish();
+}
+
+bool command::tutorialUp() {
+    transferNum(Command::TUTORIAL_UP);
+    transferFinish();
+    return true;
+}
+
+bool command::tutorialDown() {
+    transferNum(Command::TUTORIAL_DOWN);
+    transferFinish();
+    return true;
+}
+
+bool command::tutorialEnd() {
+    transferNum(Command::TUTORIAL_END);
+    transferFinish();
+    return false;
+}
+
+void command::receiveEvent() {
+    int recVal0,recVal1,recVal2,recVal3;
+    // char const* recStr;
+    String recStr;
+    bool clkws;
+    Command cmd = (Command) Serial.parseInt();
+    switch(cmd) {
+        case Command::PLOT_ANIMA:
+            Serial.println("plotAnima");
+            display::plotAnima(boxes);
+            break;
+        case Command::CHOOSE:
+            Serial.println("choose");
+            recVal0 = Serial.parseInt();
+            Serial.println(recVal0);
+            display::choose(boxes,recVal0);
+            break;
+        case Command::GAME_START:
+            Serial.println("gameStart");
+            display::gameStart(boxes);
+            break;
+        case Command::GAME_END:
+            move::begin(boxes);
+            Serial.println("gameEnd");
+            display::gameEnd(boxes);
+            break;
+        case Command::GAME_OPEN:
+            recVal0 = Serial.parseInt();
+            Serial.println("gameOpen");
+            display::gameOpen(boxes,recVal0);
+            break;
+        case Command::RIGHT_OPEN:
+            recVal0 = Serial.parseInt();
+            Serial.println("rightOpen");
+            display::rightOpen(boxes,recVal0);
+            break;
+        case Command::WRONG_OPEN:
+            recVal0 = Serial.parseInt();
+            Serial.println("wrongOpen");
+            display::wrongOpen(boxes,recVal0);
+            break;
+        case Command::READY:
+            // recStr = (Serial.readStringUntil(TERMINATOR)).c_str();
+            recStr = Serial.readStringUntil(TERMINATOR);
+            Serial.println("ready");
+            Serial.println(recStr);
+            display::ready(recStr);
+            break;
+        case Command::SETTING_START:
+            display::settingStart();
+            Serial.println("settingStart");
+            break;
+        case Command::SETTING_MENU:
+            recVal0 = Serial.parseInt();
+            recVal1 = Serial.parseInt();
+            recVal2 = Serial.parseInt();
+            Serial.println("settingMenu");
+            display::settingMenu(
+                script[recVal0],
+                recVal1,
+                _min[recVal0],
+                _max[recVal0], 
+                recVal2
+            );
+            break;
+        case Command::MOVE_BEGIN:
+            recVal0 = Serial.parseInt();
+            boxes.num = recVal0;
+            speed = Serial.parseInt();
+            Serial.println("moveBegin");
+            move::begin(boxes);
+            keepMoving(boxes);
+            break;
+        case Command::MOVE_SWAP:
+            recVal0 = Serial.parseInt();
+            recVal1 = Serial.parseInt();
+            Serial.println("moveSwap");
+            clkws = random(0, 2);
+            move::swap(boxes,recVal0,recVal1,clkws,_step());
+            keepMoving(boxes);
+            break;
+        case Command::MOVE_END:
+            Serial.println("moveEnd");
+            move::end();
+            keepMoving(boxes);
+            move::begin(boxes);
+            break;
+        case Command::TUTORIAL_START:
+            Serial.println("tutorialStart");
+            display::tutorialStart();
+            break;
+        case Command::TUTORIAL_END:
+            Serial.println("tutorialEnd");
+            // display::tutorialEnd();
+            break;
+        case Command::TUTORIAL_UP:
+            Serial.println("tutorialUp");
+            display::tutorialUp();
+            break;
+        case Command::TUTORIAL_DOWN:
+            Serial.println("tutorialDown");
+            display::tutorialDown();
+            break;
+    }
+}
+
+\end{minted}
+
+\subsection{constant.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      constant.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines global constants
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
+
+#ifndef CONSTANT_H
+#define CONSTANT_H
+
+#define MASTER 1
+#define SLAVE 2
+#define TEST 3
+
+#define LCD_PORT 2, 3, 4, 5, 6, 7, 8
+#define LCD_WIDTH 16
+#define LCD_HEIGHT 2
+#define LCD_SIZE LCD_WIDTH, LCD_HEIGHT
+#define BAUD_RATE 9600
+
+#define MAX_BOXES 8
+#define MAX_CHARS 8
+
+#define UP_PIN 2
+#define RIGHT_PIN 3
+#define DOWN_PIN 4
+#define LEFT_PIN 5
+
+#define SETTING_PIN UP_PIN
+#define CONFIRM_PIN RIGHT_PIN
+#define TUTORIAL_PIN DOWN_PIN
+#define RESTART_PIN LEFT_PIN
+
+#define X_PIN 8
+#define Y_PIN 9
+#define X_LEFT(x) ((x) < 256)
+#define X_RIGHT(x) ((x) >= 768)
+#define Y_UP(y) ((y) >= 768)
+#define Y_DOWN(y) ((y) < 256)
+
+#define NUM 0
+#define SPEED 1
+#define DIFFI 2
+
+const int _min[] = {3, 1, 1};
+const int _max[] = {7, 7, 7};
+const char script[][11] = {
+    "Box Number",
+    "Move Speed",
+    "Difficulty"
+};
+
+#endif  // CONSTANT_H
+\end{minted}
+
+\subsection{control.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      control.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines ways to attach functions to buttons
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
+
+namespace control {
+    enum Position {
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT
+    };
+
+    void begin();
+    bool enterSettings();
+    bool exitSettings();
+    bool confirm();
+
+    // return whether to continue on this attachment
+    typedef bool (*callback)();
+
+    bool nothing();
+    bool confirm();
+
+    // up, right, down, left
+    void attachRod(callback, callback, callback, callback);
+    void attachButton(callback, callback, callback, callback);
+    // rod * 4, button * 4
+    void attachPad(
+        callback, callback, callback, callback, 
+        callback, callback, callback, callback);
+}
+
+#define WAIT_FOR_CONFIRMING \
+    control::attachButton(  \
+        &control::nothing,  \
+        &control::confirm,  \
+        &control::nothing,  \
+        &control::nothing   \
+    )
+\end{minted}
+
+\subsection{control.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      control.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements the methods that attach functions to
+//      buttons or the joystick pod
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include "../headers/constant.h"
+#include "../headers/control.h"
+
+#define UNTIL_RELEASE(pin) while (!digitalRead(pin)) delay(5)
+#define UNTIL_RETURN(mode) while(mode) delay(5)
+
+namespace control {
+    bool confirm() { return false; }
+    bool nothing() { return true; }
+}
+
+void control::begin() {
+    pinMode(SETTING_PIN, INPUT);
+    pinMode(CONFIRM_PIN, INPUT);
+    pinMode(TUTORIAL_PIN, INPUT);
+    pinMode(RESTART_PIN, INPUT);
+    pinMode(X_PIN, INPUT);
+    pinMode(Y_PIN, INPUT);
+}
+
+void control::attachButton(callback up, callback right, callback down, callback left) {
+    bool flag = true;
+    while (flag) {
+        if (!digitalRead(UP_PIN)) {
+            UNTIL_RELEASE(UP_PIN);
+            flag = (*up)();
+        } else if (!digitalRead(RIGHT_PIN)) {
+            UNTIL_RELEASE(RIGHT_PIN);
+            flag = (*right)();
+        } else if (!digitalRead(DOWN_PIN)) {
+            UNTIL_RELEASE(DOWN_PIN);
+            flag = (*down)();
+        } else if (!digitalRead(LEFT_PIN)) {
+            UNTIL_RELEASE(LEFT_PIN);
+            flag = (*left)();
+        }
+        delay(5);
+    }
+}
+
+void control::attachRod(callback up, callback right, callback down, callback left) {
+    bool flag = true;
+    while (flag) {
+        if (Y_UP(analogRead(Y_PIN))) {
+            UNTIL_RETURN(Y_UP(analogRead(Y_PIN)));
+            flag = (*up)();
+        } else if (X_RIGHT(analogRead(X_PIN))) {
+            UNTIL_RETURN(X_RIGHT(analogRead(X_PIN)));
+            flag = (*right)();
+        } else if (Y_DOWN(analogRead(Y_PIN))) {
+            UNTIL_RETURN(Y_DOWN(analogRead(Y_PIN)));
+            flag = (*down)();
+        } else if (X_LEFT(analogRead(X_PIN))) {
+            UNTIL_RETURN(X_LEFT(analogRead(X_PIN)));
+            flag = (*left)();
+        }
+        delay(5);
+    }
+}
+
+void control::attachPad(
+    callback rodUp, callback rodRight, callback rodDown, callback rodLeft,
+    callback buttonUp, callback buttonRight, callback buttonDown, callback buttonLeft) {
+    bool flag = true;
+    while (flag) {
+        if (Y_UP(analogRead(Y_PIN))) {
+            UNTIL_RETURN(Y_UP(analogRead(Y_PIN)));
+            flag = (*rodUp)();
+        } else if (X_RIGHT(analogRead(X_PIN))) {
+            UNTIL_RETURN(X_RIGHT(analogRead(X_PIN)));
+            flag = (*rodRight)();
+        } else if (Y_DOWN(analogRead(Y_PIN))) {
+            UNTIL_RETURN(Y_DOWN(analogRead(Y_PIN)));
+            flag = (*rodDown)();
+        } else if (X_LEFT(analogRead(X_PIN))) {
+            UNTIL_RETURN(X_LEFT(analogRead(X_PIN)));
+            flag = (*rodLeft)();
+        } else if (!digitalRead(UP_PIN)) {
+            UNTIL_RELEASE(UP_PIN);
+            flag = (*buttonUp)();
+        } else if (!digitalRead(RIGHT_PIN)) {
+            UNTIL_RELEASE(RIGHT_PIN);
+            flag = (*buttonRight)();
+        } else if (!digitalRead(DOWN_PIN)) {
+            UNTIL_RELEASE(DOWN_PIN);
+            flag = (*buttonDown)();
+        } else if (!digitalRead(LEFT_PIN)) {
+            UNTIL_RELEASE(LEFT_PIN);
+            flag = (*buttonLeft)();
+        }
+        delay(5);
+    }
+}
+\end{minted}
+
+\subsection{display.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      display.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines display methods
+//  Author:
+//      Mingxiao An, Man Sun
+//----------------------------------------------------------------
+
+#ifndef DISPLAY_H
+#define DISPLAY_H
+
+#include "game.h"
+#include "Arduino.h"
+
+namespace display {
+    void clear();
+    void begin();               // initialize lcd
+    void plotAnima(Boxes&);     // plot animation
+    void choose(Boxes&, int);   // select one box
+    void gameStart(Boxes&);     // the start screen
+    void gameEnd(Boxes&);       // the end screen
+    void gameOpen(Boxes&, int); // open the box
+    void rightOpen(Boxes&, int);// open right
+    void wrongOpen(Boxes&, int);// open wrong
+    void ready(char const*);    // display info in the first line
+    void ready(String&);
+    void settingStart();        // prepare for the setting page
+    void settingMenu(           // display a line of setting item
+        char const*,int,int,int,int);
+    void tutorialStart();
+    void tutorialUp();
+    void tutorialDown();
+}
+
+#endif  // DISPLAY_H
+
+\end{minted}
+
+\subsection{display.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      display.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module inplements display methods
+//  Author:
+//      Mingxiao An, Man Sun
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include <LiquidCrystal.h>
+#include "../headers/display.h"
+#include "../headers/game.h"
+#include "../headers/graph.h"
+#include "../headers/sound.h"
+
+#define EACH_COL(i) (int i = 0; i < LCD_WIDTH; i ++)
+#define EACH_ROW(i) (int i = 0; i < LCD_HEIGHT; i ++)
+#define EACH_BOX(i) (int i = 0; i < boxes.num; i ++)
+
+#define LEFTARROW (char)0
+#define RIGHTARROW (char)1
+#define BOX (char)2
+#define OPENBOX (char)3
+#define OPENRIGHT (char)4
+#define OPENWRONG (char)5
+#define BRACKETL (char)6
+#define BRACKETR (char)7
+
+namespace display {
+
+    LiquidCrystal *lcd;
+    Map display[LCD_WIDTH][LCD_HEIGHT];
+    Char charList[MAX_CHARS];
+    int charListIndex;
+    int tutorialLine;
+
+    inline int _inCharList(Char ch) {
+        for (int i = 0; i < charListIndex; i ++) {
+            if (charList[i] == ch) {
+                return i;
+            }
+        }
+        return charListIndex;
+    }
+
+    inline int _gridCol(int col) {
+        return col * 6 - 2;
+    }
+
+    inline int _gridRow(int row) {
+        return row * 9 - 2;
+    }
+
+    inline int _gridColCenter(int col) {
+        return col * 6 + 2;
+    }
+
+    inline int _gridRowCenter(int row) {
+        return row == 0 ? 2: 14;
+    }
+
+    void _initDisplay() {
+        for EACH_COL(i) {
+            for EACH_ROW(j) {
+                display[i][j].smap = ' ';
+            }
+        }
+    }
+
+    void _refreshDisplay() {
+        for (int i = 0; i < charListIndex; i ++) {
+            lcd->createChar(i, charList[i]);
+        }
+        lcd->setCursor(0, 0);
+        for EACH_COL(i) {
+            lcd->print(display[i][0].smap);
+        }
+        lcd->setCursor(0, 1);
+        for EACH_COL(i) {
+            lcd->print(display[i][1].smap);
+        }
+    }
+}
+
+void display::clear() {
+    lcd->clear();
+}
+
+void display::begin() {
+    lcd = new LiquidCrystal(LCD_PORT);
+    lcd->begin(LCD_SIZE);
+    _initDisplay();
+    _refreshDisplay();
+}
+
+void display::plotAnima(Boxes& boxes) {
+    charListIndex = 0;
+    charList[charListIndex++] = bitmaps[VERTICAL][1];
+    charList[charListIndex++] = bitmaps[VERTICAL][10];
+
+    for EACH_COL(i) {
+        for EACH_ROW(j) {
+            int gridCol = _gridCol(i);
+            int gridColCenter = _gridColCenter(i);
+            int gridRow = _gridRow(j);
+            int gridRowCenter = _gridRowCenter(j);
+            int col_relative = -1;
+            int row_relative = -1;
+
+            for EACH_BOX(k) {
+                // same row first, same col second
+                if (boxes.pos[k].r == gridRowCenter) {
+                    int _relative = boxes.pos[k].c - gridCol;
+                    if (_relative >= 0 && _relative < 9)
+                        col_relative = _relative;
+                } else if (boxes.pos[k].c == gridColCenter) {
+                    int _relative = boxes.pos[k].r - gridRow;
+                    if (_relative >= 0 && _relative < 12)
+                        row_relative = _relative;
+                }
+            }
+
+            if (col_relative == -1 && row_relative == -1) { // neither same row or col
+                display[i][j].map = NULL;
+                display[i][j].smap = ' ';
+            } else {
+                if (col_relative == -1) {                   // same col without same row
+                    display[i][j].map = bitmaps[VERTICAL][row_relative];
+                } else {
+                    if (row_relative == -1) {               // same row without same col
+                        display[i][j].map = bitmaps[
+                            j == 0 ? HORIZONTAL_LINE1 : HORIZONTAL_LINE2
+                        ][col_relative];
+                    } else {                                // both same row and col
+                        display[i][j].map = bitmaps[
+                            j == 0 ? HORIZONTAL_LINE1_WITH: HORIZONTAL_LINE2_WITH
+                        ][col_relative];
+                    }
+                }
+                // insert the char to the list if it is a new char
+                display[i][j].smap = (char)_inCharList(display[i][j].map);
+                if (display[i][j].smap == (char)charListIndex) {
+                    charList[charListIndex++] = display[i][j].map;
+                }
+            }
+        }
+    }
+
+    _refreshDisplay();
+}
+
+void display::choose(Boxes& boxes, int select) {
+    for EACH_BOX(i) {
+        int col = boxes.pos[i].c / 6;
+        lcd->setCursor(col - 1, 1);
+        lcd->print(' ');
+        lcd->setCursor(col + 1, 1);
+        lcd->print(' ');
+    }
+    int col = boxes.pos[select].c / 6;
+    lcd->setCursor(col - 1, 1);
+    lcd->print(BRACKETL);
+    lcd->setCursor(col + 1, 1);
+    lcd->print(BRACKETR);
+}
+
+void display::ready(char const *s) {
+    lcd->setCursor(0, 0);
+    lcd->print("                ");
+    lcd->setCursor(0, 0);
+    lcd->print(s);
+}
+
+void display::ready(String& s) {
+    lcd->setCursor(0, 0);
+    lcd->print("                ");
+    lcd->setCursor(0, 0);
+    lcd->print(s);
+}
+
+void display::gameStart(Boxes& boxes) {
+    lcd->clear();
+    lcd->createChar(BOX, box);
+    lcd->createChar(BRACKETL, bracketL);
+    lcd->createChar(BRACKETR, bracketR);
+    for EACH_BOX(i) {
+        int col = boxes.pos[i].c / 6;
+        lcd->setCursor(col, 1);
+        lcd->print(BOX);
+    }
+    choose(boxes, 0);
+    ready("Choose to start:");
+}
+
+void display::gameEnd(Boxes& boxes) {
+    lcd->createChar(BOX, box);
+    lcd->createChar(OPENBOX, openBox);
+    lcd->createChar(OPENRIGHT, openRight);
+    lcd->createChar(OPENWRONG, openWrong);
+    lcd->createChar(BRACKETL, bracketL);
+    lcd->createChar(BRACKETR, bracketR);
+    for EACH_BOX(i) {
+        int col = boxes.pos[i].c / 6;
+        lcd->setCursor(col, 1);
+        lcd->print(BOX);
+    }
+    choose(boxes, 0);
+    ready("Choose your box:");
+}
+
+void display::gameOpen(Boxes& boxes, int select) {
+    int col = boxes.pos[select].c / 6;
+    lcd->setCursor(col, 1);
+    lcd->print(OPENBOX);
+}
+
+void display::rightOpen(Boxes& boxes, int select) {
+    int col = boxes.pos[select].c / 6;
+    lcd->setCursor(col, 0);
+    lcd->print(OPENRIGHT);
+    lcd->setCursor(col-1,1);
+    lcd->print(' ');
+    lcd->setCursor(col+1,1);
+    lcd->print(' ');
+    soundSuccess();
+}
+
+void display::wrongOpen(Boxes& boxes, int select) {
+    int col = boxes.pos[select].c / 6;
+    lcd->setCursor(col, 0);
+    lcd->print(OPENWRONG);
+    lcd->setCursor(col-1,1);
+    lcd->print(' ');
+    lcd->setCursor(col+1,1);
+    lcd->print(' ');
+    soundWA();
+}
+
+void display::settingStart() {
+    lcd->clear();
+    lcd->createChar(LEFTARROW,leftArrow);
+    lcd->createChar(RIGHTARROW,rightArrow);
+}
+
+void display::settingMenu
+(char const* item, int value, int min, int max, int line) {
+    lcd->setCursor(0,line);
+    lcd->print(item);
+    lcd->print("   ");
+    if(min < value) lcd->print(LEFTARROW);
+    else lcd->print(" ");
+    lcd->print(value);
+    if(max > value) lcd->print(RIGHTARROW);
+    else lcd->print(" ");
+
+    if (line == 1) line = 0;
+    else line = 1;
+    lcd->setCursor(13, line);
+    lcd->print(" ");
+    lcd->setCursor(15, line);
+    lcd->print(" ");
+}
+
+void display::tutorialStart() {
+    lcd->clear();
+    tutorialLine = 0;
+    lcd->print(tutorialLine1);
+    lcd->setCursor(0, 1);
+    lcd->print(tutorialLine2);
+}
+
+void display::tutorialUp() {
+    switch (tutorialLine) {
+        case 1:
+            lcd->setCursor(0, 0);
+            lcd->print(tutorialLine1);
+            lcd->setCursor(0, 1);
+            lcd->print(tutorialLine2);
+            tutorialLine -= 1;
+            break;
+        case 2:
+            lcd->setCursor(0, 0);
+            lcd->print(tutorialLine2);
+            lcd->setCursor(0, 1);
+            lcd->print(tutorialLine3);
+            tutorialLine -= 1;
+            break;      
+    }
+}
+
+void display::tutorialDown() {
+    switch (tutorialLine) {
+        case 0:
+            lcd->setCursor(0, 0);
+            lcd->print(tutorialLine2);
+            lcd->setCursor(0, 1);
+            lcd->print(tutorialLine3);
+            tutorialLine += 1;
+            break;
+        case 1:
+            lcd->setCursor(0, 0);
+            lcd->print(tutorialLine3);
+            lcd->setCursor(0, 1);
+            lcd->print(tutorialLine4);
+            tutorialLine += 1;
+            break;
+    }
+}
+\end{minted}
+
+\subsection{game.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      game.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines basic game-control-related design
+//  Author:
+//      Mingxiao An
+//----------------------------------------------------------------
+
+#ifndef GAME_H
+#define GAME_H
+
+#include "constant.h"
+
+struct Pos {
+    int c, r;   // column and row in micro grid
+};
+
+struct Boxes {
+    int num;
+    Pos pos[MAX_BOXES];
+};
+
+typedef unsigned char *Char;
+
+struct Map {
+    char smap;  // the lcd mapping
+    Char map;   // the global mapping
+};
+
+namespace game {
+    void newGame();
+    void setting();
+    void tutorial();
+}
+
+namespace master {
+    void setup();
+    void loop();
+}
+
+namespace slave {
+    void setup();
+    void loop();
+}
+
+namespace test {
+    void setup();
+    void loop();
+}
+
+#endif  // GAME_H
+\end{minted}
+
+\subsection{game.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      game.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements game, setting, and tutorial control
+//  Author:
+//      Mingxiao An, Man Sun
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include "../headers/game.h"
+#include "../headers/command.h"
+#include "../headers/control.h"
+
+#define RANDOM_CLOCKWIZE random(0, 2)
+
+#define NUM 0
+#define SPEED 1
+#define DIFFI 2
+#define SETTING_MENU(x, l) command::settingMenu(x, *settings[x], l)
+
+namespace game {
+
+    int num = 7;    // number of boxes
+    int speed = 5;  // the speed level
+                    // minspeed = (speed + 1) / 2
+                    // maxspeed = (speed + 4) / 2
+    int diffi = 1;  // the times of moving = 5 * diffi + 5
+    int choice = 0;
+    int select = 0;
+    int settingLine = NUM;
+    int cursorLine = 0;
+
+    int *settings[] = {&num, &speed, &diffi};
+
+    inline int _step() {
+        return random((speed + 1) / 2, (speed + 4) / 2);
+    }
+
+    bool chooseLeft() {
+        if (choice != 0) {
+            choice -= 1;
+            command::choose(choice);
+        }
+        return true;
+    }
+
+    bool chooseRight() {
+        if (choice != num - 1) {
+            choice += 1;
+            command::choose(choice);
+        }
+        return true;
+    }
+
+    bool selectLeft() {
+        if (select != 0) {
+            select -= 1;
+            command::choose(select);
+        }
+        return true;
+    }
+
+    bool selectRight() {
+        if (select != num - 1) {
+            select += 1;
+            command::choose(select);
+        }
+        return true;
+    }
+
+    bool goToSetting() {
+        setting();
+        return true;
+    }
+
+    bool settingUp() {
+        switch (settingLine) {
+            case 0: 
+                break;
+            case 1: 
+                settingLine -= 1;
+                SETTING_MENU(1, 1);
+                SETTING_MENU(0, 0);
+                break;
+            case 2:
+                settingLine -= 1;
+                SETTING_MENU(2, 1);
+                SETTING_MENU(1, 0);
+                break;
+        }
+        cursorLine = 0;
+        return true;
+    }
+
+    bool settingDown() {
+        switch (settingLine) {
+            case 0: 
+                settingLine += 1;
+                SETTING_MENU(0, 0);
+                SETTING_MENU(1, 1);
+                break;
+            case 1: 
+                settingLine += 1; 
+                SETTING_MENU(1, 0);
+                SETTING_MENU(2, 1);
+                break;
+            case 2:
+                break;
+        }
+        cursorLine = 1;
+        return true;
+    }
+
+    bool settingRight() {
+        if (*settings[settingLine] < _max[settingLine]) {
+            *settings[settingLine] += 1;
+            SETTING_MENU(settingLine, cursorLine);
+        }
+        return true;
+    }
+
+    bool settingLeft() {
+        if (*settings[settingLine] > _min[settingLine]) {
+            *settings[settingLine] -= 1;
+            SETTING_MENU(settingLine, cursorLine);
+        }
+        return true;
+    }
+
+    bool goToTutorial() {
+        tutorial();
+        return true;
+    }
+}
+
+using control::nothing;
+using control::confirm;
+
+void game::newGame() {
+    command::moveBegin(num,speed);
+    choice = 0;
+    command::gameStart();
+    delay(1000);
+    // command::choose(choice);
+    control::attachPad(
+        &nothing, &chooseRight, &nothing, &chooseLeft, 
+        &goToSetting, &confirm, &goToTutorial, &nothing
+    );
+
+    command::ready("3");
+    delay(1000);
+    command::ready("2");
+    delay(1000);
+    command::ready("1");
+    delay(1000);
+    command::ready("Go");
+    delay(500);
+
+    command::moveBegin(num, speed);
+    for(int i = 5 * diffi + 5; i > 0; i --) {
+        // generate random 2 boxes
+        int box1 = random(0, num);
+        int box2 = random(1, num);
+        if (box2 == box1) {
+            box2 = 0;
+        }
+        if (box1 == choice) {
+            choice = box2;
+        } else if (box2 == choice) {
+            choice = box1;
+        }
+        command::moveSwap(box1,box2);
+        int gap = box1 - box2;
+        if (gap < 0) gap = -gap;
+        int delayTime = (2 * gap * (LCD_WIDTH / num) + 2) * 6 * (72 + diffi) / (2 * speed + 1);
+        delay(delayTime);
+    }
+    command::moveEnd();
+
+    // move::begin(boxes);
+    // display::plotAnima(boxes);
+    // DELAY;
+    // while (move::nextFrame(boxes)) {
+    //  display::plotAnima(boxes);
+    //  DELAY;
+    // }
+    // for (int i = 5 * diffi + 5; i > 0; i --) {
+    //  // generate random 2 boxes
+    //  int box1 = random(0, num);
+    //  int box2 = random(1, num);
+    //  if (box2 == box1) {
+    //      box2 = 0;
+    //  }
+    //  if (box1 == choice) {
+    //      choice = box2;
+    //  } else if (box2 == choice) {
+    //      choice = box1;
+    //  }
+    //  move::swap(
+    //      boxes, box1, box2, 
+    //      RANDOM_CLOCKWIZE,
+    //      _step()
+    //  );
+    //  while (move::nextFrame(boxes)) {
+    //      display::plotAnima(boxes);
+    //      DELAY;
+    //  }
+    // }
+    // move::end();
+    // while (move::nextFrame(boxes)) {
+    //  display::plotAnima(boxes);
+    //  DELAY;
+    // }
+
+    WAIT_FOR_CONFIRMING;
+    select = 0;
+    command::gameEnd();
+
+    control::attachPad(
+        &nothing, &selectRight, &nothing, &selectLeft, 
+        &nothing, &confirm, &nothing, &nothing
+    );
+
+    command::gameOpen(select);
+    delay(1000);
+    command::ready("");
+    if (choice == select) {
+        command::rightOpen(select);
+        delay(1000);
+        command::ready("You Win! :)");
+    } else {
+        command::wrongOpen(select);
+        delay(1000);
+        command::ready("You Lose! :(");
+        WAIT_FOR_CONFIRMING;
+        command::ready("The answer is:");
+        delay(1000);
+        command::gameOpen(choice);
+        delay(1000);
+        command::ready("");
+        command::rightOpen(choice);
+    }
+    
+    WAIT_FOR_CONFIRMING;
+}
+
+void game::setting() {
+    settingLine = NUM;
+    cursorLine = 0;
+    command::settingStart();
+    SETTING_MENU(SPEED, 1);
+    SETTING_MENU(NUM, 0);
+    control::attachPad(
+        &settingUp,
+        &settingRight,
+        &settingDown,
+        &settingLeft,
+        &confirm,
+        &confirm,
+        &nothing,
+        &nothing
+    );
+    command::moveBegin(num,speed);
+    choice = 0;
+    command::gameStart();
+}
+
+void game::tutorial() {
+    command::tutorialStart();
+    control::attachPad(
+        &command::tutorialUp,
+        &nothing,
+        &command::tutorialDown,
+        &nothing,
+        &nothing,
+        &confirm,
+        &confirm,
+        &nothing
+    );
+    command::moveBegin(num, speed);
+    choice = 0;
+    command::gameStart();
+}
+\end{minted}
+
+\subsection{game.ino}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      game.ino
+//  Languange:
+//      Wiring/Arduino
+//  Description:
+//      The module is the top module of the shell game
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include "headers/game.h"
+
+#define ROLE SLAVE
+
+void setup() {
+    #if ROLE == MASTER
+    master::setup();
+    #elif ROLE == SLAVE
+    slave::setup();
+    #elif ROLE == TEST
+    test::setup();
+    #endif  // ROLE
+}
+
+void loop() {
+    #if ROLE == MASTER
+    master::loop();
+    #elif ROLE == SLAVE
+    slave::loop();
+    #elif ROLE == TEST
+    test::loop();
+    #endif  // ROLE
+}
+\end{minted}
+
+\subsection{master.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      master.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements the master's behavior
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include "../headers/game.h"
+#include "../headers/control.h"
+
+void master::setup() {
+    Serial.begin(BAUD_RATE);
+    control::begin();
+    randomSeed(analogRead(12));
+    game::tutorial();
+}
+
+void master::loop() {
+    game::newGame();
+}
+\end{minted}
+
+\subsection{move.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      move.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines coordinate computing methods for 
+//      moving boxes
+//  Author:
+//      Man Sun
+//----------------------------------------------------------------
+
+#ifndef MOVE_H
+#define MOVE_H
+
+#include "game.h"
+
+namespace move {
+    void swap(Boxes&,int boxA, int boxB, bool clockwise, int step);
+    void begin(Boxes&);
+    void end();
+    bool nextFrame(Boxes&);
+}
+
+#endif  // MOVE_H
+\end{minted}
+
+\subsection{move.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      move.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements coordinate computing methods for 
+//      moving boxes
+//  Author:
+//      Man Sun
+//----------------------------------------------------------------
+
+#ifndef MOVE_H
+#define MOVE_H
+
+#include "game.h"
+
+namespace move {
+    void swap(Boxes&,int boxA, int boxB, bool clockwise, int step);
+    void begin(Boxes&);
+    void end();
+    bool nextFrame(Boxes&);
+}
+
+#endif  // MOVE_H
+#include "../headers/game.h"
+#include "../headers/move.h"
+
+#define BLOCKWIDTH 6
+#define BLOCKHEIGHT 8
+#define LCDWIDTH 16
+#define LCDHEIGHT 2
+#define BEGINFRAMES 4
+#define BEGINHEIGHT 13
+#define ENDFRAMES 4
+#define MOVEVERSTEPS 6
+#define TOPROW 2
+#define BOTTOMROW 14
+#define LEFTCOL 2
+#define RIGHTCOL 92
+
+namespace move {
+    enum phase {BEGIN, SWITCH_OUT, SWITCH_HOR, SWITCH_BAK, END} crtPhase;
+    int stepLen;
+    int stepsRemain;
+    int switchBoxL, switchBoxR;
+    bool switchClockwise;
+    int blocksBetweenBox;
+
+    // change the number(start from 1) of the block to the column of its central bit(start from 0)
+    int block2col(int blockCol) {
+        return (BLOCKWIDTH * blockCol - BLOCKWIDTH/2 - 1);
+    }
+
+    // get the column of the central bit of the certain box
+    int getCol(Boxes &boxes, int boxNo) {
+        return (boxes.pos[boxNo].c);
+    }
+
+    // get the row of the central bit of the certain box
+    int getRow(Boxes &boxes, int boxNo) {
+        return (boxes.pos[boxNo].r);
+    }
+
+    // set the column of the central bit of the certain box
+    void setCol(Boxes &boxes, int boxNo, int col) {
+        if(col < LEFTCOL || col > RIGHTCOL) return;
+        boxes.pos[boxNo].c = col;
+    }
+
+    // set the row of the central bit of the certain box
+    void setRow(Boxes &boxes, int boxNo, int row) {
+        if(row < TOPROW || row > BOTTOMROW) return;
+        boxes.pos[boxNo].r = row;
+    }
+
+    // move the certain box down by step bit(s)
+    void moveDown(Boxes &boxes, int boxNo, int step = 1) {
+        if(getRow(boxes,boxNo) == BOTTOMROW) return;
+        if(getRow(boxes,boxNo) + step > BOTTOMROW) setRow(boxes,boxNo,BOTTOMROW);
+        else boxes.pos[boxNo].r += step;
+    }
+
+    // move the certain box up by step bit(s)
+    void moveUp(Boxes &boxes, int boxNo, int step = 1) {
+        if(getRow(boxes,boxNo) == TOPROW) return;
+        if(getRow(boxes,boxNo) - step < TOPROW) setRow(boxes,boxNo,TOPROW);
+        else boxes.pos[boxNo].r -= step;
+    }
+
+    // move the certain box left by step bit(s)
+    void moveLeft(Boxes &boxes, int boxNo, int step = 1) {
+        if(getCol(boxes,boxNo) == LEFTCOL) return;
+        if(getCol(boxes,boxNo) - step < LEFTCOL) setCol(boxes,boxNo,LEFTCOL);
+        else boxes.pos[boxNo].c -= step;
+    }
+
+    // move the certain box right by step bit(s)
+    void moveRight(Boxes &boxes, int boxNo, int step = 1) {
+        if(getCol(boxes,boxNo) == RIGHTCOL) return;
+        if(getCol(boxes,boxNo) + step > RIGHTCOL) setCol(boxes,boxNo,RIGHTCOL);
+        else boxes.pos[boxNo].c += step;
+    }
+
+    // set all the box in boxes to the central from left to right
+    void initPos(Boxes &boxes)
+    {
+        int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
+        for(int i = 0;i<boxes.num;i++)
+        {   
+            int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 2);
+            setCol(boxes,i,crtCol);
+            setRow(boxes,i,BLOCKHEIGHT);
+        }
+    }
+
+    // move all the boxes up for 1 bit
+    void beginMove(Boxes &boxes) {
+        for(int i = 0;i<boxes.num;i++) {
+            moveUp(boxes,i);
+        }
+    }
+
+    // move the two swapped boxes out of the queue by 1 bit according to the direction
+    void switchOut(Boxes &boxes) {
+        if(switchClockwise) {
+            moveUp(boxes,switchBoxL,stepLen);
+            moveDown(boxes,switchBoxR,stepLen);
+        } else {
+            moveUp(boxes,switchBoxR,stepLen);
+            moveDown(boxes,switchBoxL,stepLen);
+        }
+
+        if(getRow(boxes,switchBoxL) == (switchClockwise ? TOPROW : BOTTOMROW)) {
+            stepsRemain = (switchBoxR - switchBoxL) * (blocksBetweenBox + 1) * BLOCKWIDTH;
+            stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
+            crtPhase = SWITCH_HOR;
+        }
+    }
+
+    // move the two swapped boxes horizontally by 1 bit according to the direction
+    void switchHorizontal(Boxes &boxes) {
+        if(switchClockwise) {
+            moveRight(boxes,switchBoxL,stepLen);
+            moveLeft(boxes,switchBoxR,stepLen);
+        } else {
+            moveRight(boxes,switchBoxL,stepLen);
+            moveLeft(boxes,switchBoxR,stepLen);
+        }
+
+        if(stepsRemain == 0) {
+            stepsRemain = MOVEVERSTEPS;
+            stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
+            crtPhase = SWITCH_BAK;
+        }
+    }
+
+    // move the two swapped boxes back to the queue by 1 bit according to the direction
+    void switchBack(Boxes &boxes) {
+        if(switchClockwise) {
+            moveDown(boxes,switchBoxL,stepLen);
+            moveUp(boxes,switchBoxR,stepLen);
+        } else {
+            moveDown(boxes,switchBoxR,stepLen);
+            moveUp(boxes,switchBoxL,stepLen);
+        }
+    }
+
+    // move all the boxes down by 1 bit
+    void endMove(Boxes &boxes) {
+        for(int i = 0;i<boxes.num;i++) {
+            moveDown(boxes,i);
+        }
+    }
+    
+}
+
+
+
+// set all the boxes to their beginning positions
+void move::begin(Boxes &boxes) {
+    crtPhase = BEGIN;
+    stepsRemain = BEGINFRAMES;
+    blocksBetweenBox = LCDWIDTH / boxes.num - 1;
+    int margin = (LCDWIDTH - boxes.num - blocksBetweenBox * (boxes.num - 1)) / 2;
+    for(int i = 0;i<boxes.num;i++)
+    {   
+        int crtCol = block2col(margin + i * (blocksBetweenBox + 1) + 2);
+        setCol(boxes,i,crtCol);
+        setRow(boxes,i,BEGINHEIGHT);
+    }
+}
+
+// record the number of the two swapped boxes and the direction
+void move::swap(Boxes &boxes, int boxA, int boxB, bool clockwise,int step) {
+    crtPhase = SWITCH_OUT;
+    initPos(boxes);
+    if (boxA < boxB) {
+        switchBoxL = boxA;
+        switchBoxR = boxB;
+    } else {
+        switchBoxL = boxB;
+        switchBoxR = boxA;
+    }
+    switchClockwise = clockwise;
+    stepLen = step;
+
+    stepsRemain = MOVEVERSTEPS;
+    stepsRemain = (stepsRemain + stepLen - 1) / stepLen;
+}
+
+// set all the boxes to their ending positions
+void move::end() {
+    crtPhase = END;
+    stepsRemain = ENDFRAMES;
+}
+
+// modify the current positions according to the phases and remaining steps
+// return true if there are still remaining steps, false if not
+bool move::nextFrame(Boxes &boxes) {
+    if(stepsRemain == 0) return false;
+    else stepsRemain -= 1;
+    switch(crtPhase) {
+        case BEGIN:
+            beginMove(boxes);
+            break;
+        case SWITCH_OUT:
+            switchOut(boxes);
+            break;
+        case SWITCH_HOR:
+            switchHorizontal(boxes);
+            break;
+        case SWITCH_BAK:
+            switchBack(boxes);
+            break;
+        case END:
+            endMove(boxes);
+            break;
+    }
+    return true;
+}
+\end{minted}
+
+\subsection{pitches.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      pitches.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines constants of pitches
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
+
+/*************************************************
+ * Public Constants
+ *************************************************/
+
+#define NOTE_B0  31
+#define NOTE_C1  33
+#define NOTE_CS1 35
+#define NOTE_D1  37
+#define NOTE_DS1 39
+#define NOTE_E1  41
+#define NOTE_F1  44
+#define NOTE_FS1 46
+#define NOTE_G1  49
+#define NOTE_GS1 52
+#define NOTE_A1  55
+#define NOTE_AS1 58
+#define NOTE_B1  62
+#define NOTE_C2  65
+#define NOTE_CS2 69
+#define NOTE_D2  73
+#define NOTE_DS2 78
+#define NOTE_E2  82
+#define NOTE_F2  87
+#define NOTE_FS2 93
+#define NOTE_G2  98
+#define NOTE_GS2 104
+#define NOTE_A2  110
+#define NOTE_AS2 117
+#define NOTE_B2  123
+#define NOTE_C3  131
+#define NOTE_CS3 139
+#define NOTE_D3  147
+#define NOTE_DS3 156
+#define NOTE_E3  165
+#define NOTE_F3  175
+#define NOTE_FS3 185
+#define NOTE_G3  196
+#define NOTE_GS3 208
+#define NOTE_A3  220
+#define NOTE_AS3 233
+#define NOTE_B3  247
+#define NOTE_C4  262
+#define NOTE_CS4 277
+#define NOTE_D4  294
+#define NOTE_DS4 311
+#define NOTE_E4  330
+#define NOTE_F4  349
+#define NOTE_FS4 370
+#define NOTE_G4  392
+#define NOTE_GS4 415
+#define NOTE_A4  440
+#define NOTE_AS4 466
+#define NOTE_B4  494
+#define NOTE_C5  523
+#define NOTE_CS5 554
+#define NOTE_D5  587
+#define NOTE_DS5 622
+#define NOTE_E5  659
+#define NOTE_F5  698
+#define NOTE_FS5 740
+#define NOTE_G5  784
+#define NOTE_GS5 831
+#define NOTE_A5  880
+#define NOTE_AS5 932
+#define NOTE_B5  988
+#define NOTE_C6  1047
+#define NOTE_CS6 1109
+#define NOTE_D6  1175
+#define NOTE_DS6 1245
+#define NOTE_E6  1319
+#define NOTE_F6  1397
+#define NOTE_FS6 1480
+#define NOTE_G6  1568
+#define NOTE_GS6 1661
+#define NOTE_A6  1760
+#define NOTE_AS6 1865
+#define NOTE_B6  1976
+#define NOTE_C7  2093
+#define NOTE_CS7 2217
+#define NOTE_D7  2349
+#define NOTE_DS7 2489
+#define NOTE_E7  2637
+#define NOTE_F7  2794
+#define NOTE_FS7 2960
+#define NOTE_G7  3136
+#define NOTE_GS7 3322
+#define NOTE_A7  3520
+#define NOTE_AS7 3729
+#define NOTE_B7  3951
+#define NOTE_C8  4186
+#define NOTE_CS8 4435
+#define NOTE_D8  4699
+#define NOTE_DS8 4978
+\end{minted}
+
+\subsection{slave.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      slave.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module implements the slave's behavior
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include "../headers/game.h"
+#include "../headers/command.h"
+#include "../headers/display.h"
+
+#define TILT 11
+#define BUZZER 9
+
+void slave::setup() {
+    pinMode(BUZZER, OUTPUT);
+    display::begin();
+    Serial.begin(BAUD_RATE);
+    randomSeed(analogRead(12));
+}
+
+void slave::loop() {
+    if (Serial.available() > 0) {
+        command::receiveEvent();
+    }
+    if (!digitalRead(TILT)) {
+        display::clear();
+    }
+}
+\end{minted}
+
+\subsection{sound.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      sound.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines and implements sound effects for buzzer
+//  Author:
+//      Muhan Li
+//----------------------------------------------------------------
+
+#ifndef SOUND_H
+#define SOUND_H
+#define BUZZER_PORT 9
+
+#include "pitches.h"
+
+int melody[][5] = {
+    { NOTE_C5, NOTE_E5, NOTE_G5, NOTE_E5, NOTE_G5 },
+    { NOTE_G3, NOTE_G3 }
+};
+
+int noteDuration[][5]{
+    { 375, 125, 375, 125, 1000 },
+    { 500, 1500 }
+};
+
+void soundSuccess() {
+    for (int i = 0; i < 5; i++) {
+        tone(BUZZER_PORT, melody[0][i], noteDuration[0][i]);
+        delay(noteDuration[0][i] * 1.30);
+    }
+}
+
+void soundWA() {
+    for (int i = 0; i < 2; i++) {
+        tone(BUZZER_PORT, melody[1][i], noteDuration[1][i]);
+        delay(noteDuration[1][i] * 1.30);
+    }
+}
+
+#endif
+\end{minted}
+
+\subsection{test.cpp}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      test.cpp
+//  Languange:
+//      C++
+//  Description:
+//      The module is for testing
+//  Author:
+//      Muhan Li, Man Sun, Mingxiao An
+//----------------------------------------------------------------
+
+#include "Arduino.h"
+#include "../headers/display.h"
+#include "../headers/move.h"
+#include "../headers/control.h"
+#include "../headers/game.h"
+
+bool _up() {
+    Serial.println("up");
+    return true;
+}
+
+bool _right() {
+    Serial.println("right");
+    return false;
+}
+
+bool _down() {
+    Serial.println("down");
+    return true;
+}
+
+bool _left() {
+    Serial.println("left");
+    return true;
+}
+
+void test::setup() {
+    Serial.begin(BAUD_RATE);
+    control::begin();
+}
+
+void test::loop() {
+    Serial.println("Start one");
+    control::attachButton(&_up, &_right, &_down, &_left);
+    Serial.println("Finish one");
+}
+\end{minted}
+
+\subsection{graph.h}
+\begin{minted}{c}
+//----------------------------------------------------------------
+//  Module name:
+//      graph.h
+//  Languange:
+//      C++
+//  Description:
+//      The module defines character bitmaps to show on lcd
+//  Author:
+//      Man Sun, Muhan Li
+//----------------------------------------------------------------
+
+#ifndef GRAPH_H
+#define GRAPH_H
+
+#include "Arduino.h"
+
+// category: 0 for vertical, line: 1,2
+// category: 1 for horizontal with one stay in the bottom, line: 1
+// category: 2 for horizontal in the top, line: 1
+// category: 3 for horizontal with one stay in the top, line: 2
+// category: 4 for horizontal in the bottom, line: 2
+#define VERTICAL 0
+#define HORIZONTAL_LINE1_WITH 1
+#define HORIZONTAL_LINE1 2
+#define HORIZONTAL_LINE2_WITH 3
+#define HORIZONTAL_LINE2 4
+
+static byte bitmaps[5][12][8] = {
+    {
+        // line:1,2 ; cat:0
+        {
+            B01110,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B10101,
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B10001,
+            B10101,
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001,
+            B10101,
+            B10001
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001,
+            B10101
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B01110
+        }
+    }, {
+        // line:1 ; cat:1
+        {
+            B00000,
+            B10000,
+            B10000,
+            B10000,
+            B00000,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B10000,
+            B01000,
+            B01000,
+            B01000,
+            B10000,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B11000,
+            B00100,
+            B10100,
+            B00100,
+            B11000,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B11100,
+            B00010,
+            B01010,
+            B00010,
+            B11100,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B00111,
+            B01000,
+            B01010,
+            B01000,
+            B00111,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B00011,
+            B00100,
+            B00101,
+            B00100,
+            B00011,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B00001,
+            B00010,
+            B00010,
+            B00010,
+            B00001,
+            B00000,
+            B01110,
+            B10001
+        }, {
+            B00000,
+            B00001,
+            B00001,
+            B00001,
+            B00000,
+            B00000,
+            B01110,
+            B10001
+        },  {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001
+        },  {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001
+        },  {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001
+        }
+    }, {
+        // line:1 ; cat:2
+        {
+            B00000,
+            B10000,
+            B10000,
+            B10000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B10000,
+            B01000,
+            B01000,
+            B01000,
+            B10000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B11000,
+            B00100,
+            B10100,
+            B00100,
+            B11000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B11100,
+            B00010,
+            B01010,
+            B00010,
+            B11100,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00111,
+            B01000,
+            B01010,
+            B01000,
+            B00111,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00011,
+            B00100,
+            B00101,
+            B00100,
+            B00011,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00001,
+            B00010,
+            B00010,
+            B00010,
+            B00001,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B00001,
+            B00001,
+            B00001,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }
+    }, {
+        // line:2 ; cat:3
+        {
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B10000,
+            B10000,
+            B10000,
+            B00000
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B10000,
+            B01000,
+            B01000,
+            B01000,
+            B10000
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B11000,
+            B00100,
+            B10100,
+            B00100,
+            B11000
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B11100,
+            B00010,
+            B01010,
+            B00010,
+            B11100
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00111,
+            B01000,
+            B01010,
+            B01000,
+            B00111
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00011,
+            B00100,
+            B00101,
+            B00100,
+            B00011
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00001,
+            B00010,
+            B00010,
+            B00010,
+            B00001
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00001,
+            B00001,
+            B00001,
+            B00000
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B10001,
+            B01110,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }
+    }, {
+        // line:2 ; cat:4
+        {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B10000,
+            B10000,
+            B10000,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B10000,
+            B01000,
+            B01000,
+            B01000,
+            B10000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B11000,
+            B00100,
+            B10100,
+            B00100,
+            B11000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B11100,
+            B00010,
+            B01010,
+            B00010,
+            B11100
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B01110,
+            B10001,
+            B10101,
+            B10001,
+            B01110
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00111,
+            B01000,
+            B01010,
+            B01000,
+            B00111
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00011,
+            B00100,
+            B00101,
+            B00100,
+            B00011
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00001,
+            B00010,
+            B00010,
+            B00010,
+            B00001
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00001,
+            B00001,
+            B00001,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }, {
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000,
+            B00000
+        }
+    }
+};
+
+static byte box[] =  {
+    B00000,
+    B01110,
+    B10001,
+    B10101,
+    B10001,
+    B01110,
+    B00000,
+    B00000
+};
+
+static byte bracketL[] = {
+    B00111,
+    B00100,
+    B00100,
+    B00100,
+    B00100,
+    B00100,
+    B00111,
+    B00000
+};
+
+static byte bracketR[] = {
+    B11100,
+    B00100,
+    B00100,
+    B00100,
+    B00100,
+    B00100,
+    B11100,
+    B00000
+};
+
+static byte openBox[] = {
+    B00000,
+    B01110,
+    B11111,
+    B10101,
+    B10001,
+    B01110,
+    B00000,
+    B00000
+};
+
+static byte openRight[] = {
+    B00000,
+    B00000,
+    B00000,
+    B01010,
+    B10101,
+    B10001,
+    B01010,
+    B00100
+};
+
+static byte openWrong[] = {
+    B00000,
+    B00000,
+    B00000,
+    B10001,
+    B01010,
+    B00100,
+    B01010,
+    B10001
+};
+
+static byte leftArrow[] = {
+    B00000,
+    B00001,
+    B00011,
+    B00111,
+    B01111,
+    B00111,
+    B00011,
+    B00001
+};
+
+static byte rightArrow[] = {
+    B00000,
+    B10000,
+    B11000,
+    B11100,
+    B11110,
+    B11100,
+    B11000,
+    B10000
+};
+
+static String tutorialLine1 = "BTN_UP - SETTING";
+static String tutorialLine2 = "BTN_RT - CONFIRM";
+static String tutorialLine3 = "BTN_DN -    HELP";
+static String tutorialLine4 = "JOYSTK -  MOVING";
+
+#endif  // GRAPH_H
+\end{minted}

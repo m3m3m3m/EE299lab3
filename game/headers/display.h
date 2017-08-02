@@ -1,6 +1,6 @@
 //----------------------------------------------------------------
 //  Module name:
-//      sound.h
+//      display.h
 //  Languange:
 //      C++
 //  Description:
