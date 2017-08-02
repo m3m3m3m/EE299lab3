@@ -8,7 +8,7 @@
 #define TERMINATOR '\t'
 
 namespace command {
-	int moveStep;
+	int speed;
 	Boxes boxes;
 
 	enum Command {
@@ -47,6 +47,10 @@ namespace command {
 			display::plotAnima(boxes);
 			delay(20);
 		} while(move::nextFrame(boxes));
+	}
+
+	inline int _step() {
+		return random((speed + 1) / 2, (speed + 4) / 2);
 	}
 
 }
@@ -102,26 +106,25 @@ void command::settingStart() {
 }
 
 void command::settingMenu
-(char const* item, int value, int min, int max, int line) {
+(int itemNo, int value, int line) {
 	transferNum(Command::SETTING_MENU);
-	transferString(item);
+	transferNum(itemNo);
 	transferNum(value);
-	transferNum(min);
-	transferNum(max);
 	transferNum(line);
 	transferFinish();
 }
 
-void command::moveBegin() {
+void command::moveBegin(int num, int speed) {
 	transferNum(Command::MOVE_BEGIN);
+	transferNum(num);
+	transferNum(speed);
 	transferFinish();
 }
 
-void command::moveSwap(int boxA, int boxB, bool clockwise) {
+void command::moveSwap(int boxA, int boxB) {
 	transferNum(Command::MOVE_SWAP);
 	transferNum(boxA);
 	transferNum(boxB);
-	transferNum((int) clockwise);
 	transferFinish();
 }
 
@@ -130,17 +133,11 @@ void command::moveEnd() {
 	transferFinish();
 }
 
-void command::moveSetup(int num, int speed) {
-	transferNum(Command::MOVE_SETUP);
-	boxes.num = num;
-	move::begin(boxes);
-	transferNum(speed);
-	transferFinish();
-}
 
 void command::receiveEvent() {
 	int recVal0,recVal1,recVal2,recVal3;
 	char const* recStr;
+	bool clkws;
 	Command cmd = (Command) Serial.parseInt();
 	switch(cmd) {
 		case Command::PLOT_ANIMA:
@@ -185,15 +182,16 @@ void command::receiveEvent() {
 			Serial.println("settingStart");
 			break;
 		case Command::SETTING_MENU:
-			recStr = Serial.readStringUntil(TERMINATOR).c_str();
 			recVal0 = Serial.parseInt();
 			recVal1 = Serial.parseInt();
 			recVal2 = Serial.parseInt();
-			recVal3 = Serial.parseInt();
 			Serial.println("settingMenu");
-			display::settingMenu(recStr,recVal0,recVal1,recVal2,recVal3);
+			display::settingMenu(script[recVal0],recVal1,_min[recVal0],_max[recVal0], recVal2);
 			break;
 		case Command::MOVE_BEGIN:
+			recVal0 = Serial.parseInt();
+			boxes.num = recVal0;
+			speed = Serial.parseInt();
 			Serial.println("moveBegin");
 			move::begin(boxes);
 			keepMoving(boxes);
@@ -201,20 +199,15 @@ void command::receiveEvent() {
 		case Command::MOVE_SWAP:
 			recVal0 = Serial.parseInt();
 			recVal1 = Serial.parseInt();
-			recVal2 = Serial.parseInt();
 			Serial.println("moveSwap");
-			move::swap(boxes,recVal0,recVal1,(bool)recVal2,moveStep);
+			clkws = random(0, 2);
+			move::swap(boxes,recVal0,recVal1,clkws,_step());
 			keepMoving(boxes);
 			break;
 		case Command::MOVE_END:
 			Serial.println("moveEnd");
 			move::end();
 			keepMoving(boxes);
-			break;
-		case Command::MOVE_SETUP:
-			int speed = Serial.parseInt();
-			moveStep = random((speed + 1) / 2, (speed + 4) / 2);
-			Serial.println("moveSetup");
 			break;
 	}
 }

@@ -1,15 +1,7 @@
 
 #include "Arduino.h"
 #include "../headers/game.h"
-#include "../headers/move.h"
-
-#if ROLE == MASTER
 #include "../headers/command.h"
-namespace display = command;
-#else
-#include "../headers/display.h"
-#endif	// ROLE
-
 #include "../headers/control.h"
 
 #define DELAY delay(20)
@@ -18,7 +10,7 @@ namespace display = command;
 #define NUM 0
 #define SPEED 1
 #define DIFFI 2
-#define SETTING_MENU(x, l) display::settingMenu(script[x], *settings[x], mins[x], maxs[x], l)
+#define SETTING_MENU(x, l) command::settingMenu(x, *settings[x], l)
 
 namespace game {
 
@@ -44,21 +36,35 @@ namespace game {
 }
 
 void game::newGame() {
-	Boxes boxes = {.num=num};
-	move::begin(boxes);
-	display::gameStart(boxes);
+	command::gameStart();
 	delay(1000);
-	display::choose(boxes, choice);
-	WAIT_FOR_CONFIRMING DELAY;
-	display::ready("3");
+	command::choose(choice);
+	DELAY;
+	command::ready("3");
 	delay(1000);
-	display::ready("2");
+	command::ready("2");
 	delay(1000);
-	display::ready("1");
+	command::ready("1");
 	delay(1000);
-	display::ready("Go");
+	command::ready("Go");
 	delay(500);
 
+	command::moveBegin(num, speed);
+	for(int i = 5 * diffi + 5; i > 0; i --) {
+		// generate random 2 boxes
+		int box1 = random(0, num);
+		int box2 = random(1, num);
+		if (box2 == box1) {
+			box2 = 0;
+		}
+		if (box1 == choice) {
+			choice = box2;
+		} else if (box2 == choice) {
+			choice = box1;
+		}
+		command::moveSwap(box1,box2);
+	}
+	command::moveEnd();
 	// move::begin(boxes);
 	// display::plotAnima(boxes);
 	// DELAY;
@@ -94,38 +100,38 @@ void game::newGame() {
 	// 	DELAY;
 	// }
 
-	display::gameEnd(boxes);
+	command::gameEnd();
 	delay(1000);
 	int select = random(0, num);
-	display::choose(boxes, select);
-	WAIT_FOR_CONFIRMING DELAY;
-	display::gameOpen(boxes, select);
+	command::choose(select);
+	DELAY;
+	command::gameOpen(select);
 	delay(1000);
-	display::ready("");
+	command::ready("");
 	if (choice == select) {
-		display::rightOpen(boxes, select);
+		command::rightOpen(select);
 		delay(1000);
-		display::ready("You Win! :)");
+		command::ready("You Win! :)");
 	} else {
-		display::wrongOpen(boxes, select);
+		command::wrongOpen(select);
 		delay(1000);
-		display::ready("You Lose! :(");
-		WAIT_FOR_CONFIRMING DELAY;
-		display::ready("The answer is:");
+		command::ready("You Lose! :(");
+		DELAY;
+		command::ready("The answer is:");
 		delay(1000);
-		display::gameOpen(boxes, choice);
+		command::gameOpen(choice);
 		delay(1000);
-		display::ready("");
-		display::rightOpen(boxes, choice);
+		command::ready("");
+		command::rightOpen(choice);
 	}
-	WAIT_FOR_CONFIRMING DELAY;
+	DELAY;
 	setting();
 }
 
 void game::setting() {
 	int settingLine = NUM;
-	display::settingStart();
+	command::settingStart();
 	SETTING_MENU(NUM, 0);
 	SETTING_MENU(SPEED, 1);
-	WAIT_FOR_CONFIRMING DELAY;
+	DELAY;
 }

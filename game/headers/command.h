@@ -12,10 +12,10 @@ namespace command{
 	void ready(char const*);	// display info in the first line
 	void settingStart();		// prepare for the setting page
 	void settingMenu(			// display a line of setting item
-		char const*,int,int,int,int);
+		int,int,int);
 	void receiveEvent();		// receive a command and execute it
-	void moveBegin();			// begin moving
-	void moveSwap(int,int,bool);// swap two boxes
+	void moveBegin(int,int);	// begin moving
+	void moveSwap(int,int);		// swap two boxes
 	void moveEnd();				// end moving
 	void moveSetup(int,int);	// setting number and speed
 }
