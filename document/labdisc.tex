@@ -22,3 +22,8 @@ The output of the slave board is its LCD screen and a buzzer. Also, it will prin
 Depending on the command it receives from the serial port and the tilt button, it will change different local variables such as the number of boxes, the speed of swapping, the cursor position, etc.
 
 \paragraph{Pseudo English description of algorithms, functions, or procedures}
+
+\subparagraph{Buzzer}
+\hfill \newline
+We used a buzzer to play a sound effect after user's every single guess. Two melodies are written in the code in pitches and durations, for a correct answer or a wrong one. To play a music, function tone() is called to make a sound of a designated pitch, and then it delays until the tone ends. The delay time is set 30 percent longer than the duration of the tone to make it sound like two seperate notes. This repeats until all the notes are played, and function notone() is called to stop the buzzer.
+
