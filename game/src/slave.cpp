@@ -18,7 +18,7 @@ void slave::loop() {
 	if (Serial.available() > 0) {
 		command::receiveEvent();
 	}
-	if (digitalRead(TILT)) {
+	if (!digitalRead(TILT)) {
 		display::clear();
 	}
 }

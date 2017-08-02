@@ -7,7 +7,7 @@
 #include "pitches.h"
 
 int melody[][5] = {
-	{ NOTE_C4, NOTE_E4, NOTE_G4, NOTE_E4, NOTE_G4 },
+	{ NOTE_C5, NOTE_E5, NOTE_G5, NOTE_E5, NOTE_G5 },
 	{ NOTE_G3, NOTE_G3 }
 };
 
