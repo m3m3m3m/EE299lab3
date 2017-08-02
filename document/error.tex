@@ -5,4 +5,9 @@ At first, we tried to send only the plotting command in a smaller scale through 
 	\item Delay brutally. We force the master to delay a variable time based on our estimation of how long time is the slave going to take to handle the command just sent.
 \end{enumerate}
 \hfill \newline
-We did not adopt the first plan, for the reason that it was costly to build a time sharing system in arduino. We have to check whether there are incoming commands when parsing end executing commands. We tried the second plan, but it seemed that the XBee could not support our idea.
+We did not adopt the first plan, for the reason that it was costly to build a time sharing system in arduino. We have to check whether there are incoming commands when parsing end executing commands. We tried the second plan, but it seemed that the XBee could not support our idea. To achieve the third plan, to estimate the period each command takes, we did some calculating. The most difficult part was the moving animation. We first assumed that the time it cost had a linear relation with how many small grids it moves. Then we've got equation as follows:
+\begin{equation}
+	t = \lambda \times \frac{2 \times (box\_gap \times \mathrm{ceil}(LCD\_WIDTH \div num) + 2) \times 6}{2 \times speed + 1} (\mathrm{ms})
+\end{equation}
+\hfill \newline
+We recorded period of time on various circumstances, proving that $\lambda$ was almost a constant. After several tests, we decided to have $\lambda$ as $(72+num)$, in order to avoid buffer overflow.
