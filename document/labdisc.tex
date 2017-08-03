@@ -65,7 +65,7 @@ We defined the frequencies for all the pitches we need in the sound file.
 \hfill \newline
 We used one of these three files in different phases and for different boards. In the test phase, we only test the display format and some other performance. When we added board-wise communication to the module, we use the first two files for the two boards to distinguish one from the other. The master file calls the tutorial page in setup and calls for a new round in its loop. The slave file prepares for the serial communication in setup and receives the commands (if the tilt is not flipped), otherwise it will clear the screen.
 
-\subsubsection{Hardware Implementation}
+\subsection{Hardware Implementation}
 See figure[\ref{fig:schm}].
 \begin{figure}[!htbp]
 	\centering
@@ -74,7 +74,7 @@ See figure[\ref{fig:schm}].
 	\label{fig:schm}
 \end{figure}
 
-\subsubsection{Software Implementation}
+\subsection{Software Implementation}
 See figure[\ref{fig:flow}].
 \begin{figure}[!htbp]
 	\centering
