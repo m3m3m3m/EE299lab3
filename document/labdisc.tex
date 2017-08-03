@@ -6,6 +6,7 @@ This module is a box-guessing game designed by ourselves. The input is received 
 \paragraph{Inputs, Outputs and Side Effects}
 \hfill \newline
 Since there are two boards in our module, we will introduce the two boards separately.
+
 \subparagraph{Master}
 \hfill \newline
 The input of the master board is a joystick(containing four directions), and four direction buttons. These inputs are received by passing pointers to functions that realize the reactions to different buttons and directions of joystick movement to the public interface of the joysticks and buttons.Users can use joystick to move the cursor to select the box they want to guess before the game starts and the correct box they think in the open box phase. They can also use the joystick to modify the settings. To enter the setting page, they will need to push the up button before the game starts. They can push the right button to confirm after they choose the box to guess, before and after they select the box as their guess, after they finish setting, and after they finish reading the tutorial. They can push the down button before the game starts to read the tutorial and to exit the tutorial page. \\
@@ -82,3 +83,21 @@ See figure[\ref{fig:flow}].
 	\caption{The flow of control}
 	\label{fig:flow}
 \end{figure}
+
+\subsection{User Mannual}
+This part will give a brief introduce on how to play the shell game provided by the module.
+\paragraph{Button Usage}
+\hfill \newline
+\textbf{joystick} Tug the joystick to move the one you want to choose -- a box, an item in setting and the page you want to check in tutorial page.\\
+\textbf{up button} Press this button before the game starts to enter the setting page.\\
+\textbf{right button} The confirming button, maybe the most frequently pressed button. Press this button after you finish reading the tutorial page, or finishing setting, or finishing choosing a box before and after the boxes move.\\
+\textbf{down button} Press this button before the game starts to enter the tutorial page, or to exit the tutorial page if you are currently in the tutorial page.\\
+\textbf{tilt button} Flip this button if you don't want to see the content on the screen -- when you feel bored or dizzy or want to add some difficulties. Flip it back to see the content again.
+
+\paragraph{Get Started}
+\hfill \newline
+You can easily get started by choosing a box and confirming. Then you need to keep tracing the box you have chosen and select it after all the boxes stopped and confirming. After you move the joystick and choose the correct box, you will get to know the result.
+
+\paragraph{More Challenges}
+\hfill \newline
+You can modify the number of boxes, the speed of switching and the difficulty by setting their values in the setting page. You can set the number of boxes from 3 to 7, and the speed and the difficulty from 1 to 7.
